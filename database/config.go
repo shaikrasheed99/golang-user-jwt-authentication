@@ -2,18 +2,16 @@ package database
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/helper"
 )
 
 func GetDSNString() string {
 	err := godotenv.Load()
 
-	if err != nil {
-		log.Fatal("Error in loading .env file")
-	}
+	helper.LogError(err)
 
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")

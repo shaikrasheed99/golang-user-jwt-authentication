@@ -1,8 +1,7 @@
 package database
 
 import (
-	"log"
-
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/helper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,9 +11,7 @@ func InitDatabase() *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		log.Fatal("Error connecting to database")
-	}
+	helper.LogError(err)
 
 	return db
 }
