@@ -5,13 +5,13 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/shaikrasheed99/golang-user-jwt-authentication/helper"
 )
 
 func GetDSNString() string {
 	err := godotenv.Load()
-
-	helper.LogError(err)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
