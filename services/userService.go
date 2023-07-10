@@ -6,6 +6,7 @@ import (
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/models"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
 )
 
 type UserService interface {
@@ -23,11 +24,17 @@ func NewUserService(ur repositories.UserRepository) UserService {
 }
 
 func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, error) {
+	hashedPass, err := utils.GenerateHashedPassword(userReq.Password)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
 	user := &models.User{
 		FirstName: userReq.FirstName,
 		LastName:  userReq.LastName,
 		Username:  userReq.Username,
-		Password:  userReq.Password,
+		Password:  hashedPass,
 		Email:     userReq.Email,
 	}
 
