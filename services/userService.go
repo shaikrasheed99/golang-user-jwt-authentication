@@ -1,12 +1,14 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/models"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
+	"gorm.io/gorm"
 )
 
 type UserService interface {
@@ -30,7 +32,14 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 		return nil, err
 	}
 
-	user := &models.User{
+	_, err = us.ur.FindUserByUsername(userReq.Username)
+
+	if err != gorm.ErrRecordNotFound {
+		fmt.Println("User is already exists with username")
+		return nil, errors.New("user is already exists with username")
+	}
+
+	newUser := &models.User{
 		FirstName: userReq.FirstName,
 		LastName:  userReq.LastName,
 		Username:  userReq.Username,
@@ -38,7 +47,7 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 		Email:     userReq.Email,
 	}
 
-	savedUser, err := us.ur.Save(user)
+	savedUser, err := us.ur.Save(newUser)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err

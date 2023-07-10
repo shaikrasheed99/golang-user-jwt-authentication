@@ -9,6 +9,7 @@ import (
 
 type UserRepository interface {
 	Save(*models.User) (models.User, error)
+	FindUserByUsername(username string) (models.User, error)
 }
 
 type userRepository struct {
@@ -29,4 +30,21 @@ func (ur *userRepository) Save(user *models.User) (models.User, error) {
 	}
 
 	return *user, nil
+}
+
+func (ur *userRepository) FindUserByUsername(username string) (models.User, error) {
+	var user models.User
+
+	res := ur.db.Where("username = ?", username).Find(&user)
+	if res.Error != nil {
+		fmt.Println("Error while finding user by username")
+		return models.User{}, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		fmt.Println("No users found by username")
+		return models.User{}, gorm.ErrRecordNotFound
+	}
+
+	return user, nil
 }
