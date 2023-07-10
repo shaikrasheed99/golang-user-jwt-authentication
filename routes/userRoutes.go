@@ -6,9 +6,11 @@ import (
 )
 
 const (
-	HealthEndpint = "/health"
+	SignupUserEndpoint = "/signup"
+	HealthEndpint      = "/health"
 )
 
-func RegisterUserRoutes(engine *gin.Engine) {
-	engine.GET(HealthEndpint, controllers.Health)
+func RegisterUserRoutes(engine *gin.Engine, uc controllers.UserController) {
+	engine.POST(SignupUserEndpoint, uc.Signup)
+	engine.GET(HealthEndpint, uc.Health)
 }

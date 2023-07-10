@@ -1,21 +1,26 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/controllers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/database"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/routes"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/services"
 )
 
 func main() {
 	db := database.InitDatabase()
 
-	fmt.Printf("db: %v\n", db)
+	ur := repositories.NewUserRepository(db)
+
+	us := services.NewUserService(ur)
+
+	uc := controllers.NewUserController(us)
 
 	app := gin.Default()
 
-	routes.RegisterUserRoutes(app)
+	routes.RegisterUserRoutes(app, uc)
 
 	app.Run()
 }
