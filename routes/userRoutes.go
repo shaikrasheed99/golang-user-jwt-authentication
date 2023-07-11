@@ -3,16 +3,11 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/controllers"
-)
-
-const (
-	SignupUserEndpoint = "/signup"
-	LoginUserEndpoint  = "/login"
-	HealthEndpint      = "/health"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
 )
 
 func RegisterUserRoutes(engine *gin.Engine, uc controllers.UserController) {
-	engine.POST(SignupUserEndpoint, uc.SignupHandler)
-	engine.POST(LoginUserEndpoint, uc.LoginHandler)
-	engine.GET(HealthEndpint, uc.Health)
+	engine.POST(utils.SignupUserEndpoint, uc.SignupHandler)
+	engine.POST(utils.LoginUserEndpoint, uc.LoginHandler)
+	engine.GET(utils.HealthEndpint, uc.Health)
 }
