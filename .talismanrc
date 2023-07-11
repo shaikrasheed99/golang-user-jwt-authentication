@@ -9,4 +9,6 @@ fileignoreconfig:
     checksum: 9b33d655cdd21fdaf1f5d613619415016de94fb331df420cd2ccf3bf5d1b2c2b
   - filename: services/userService.go
     checksum: eb6450b56b5e3910aa52db32af6df0961a4bcb419b7c93b0e174e882d2c1c05e
+  - filename: requests/loginRequest.go
+    checksum: 8daa5cf7ce7d177e212b05a30f34deca2be64d4a7b9bae188bb2372ee412eee9
 version: ""
