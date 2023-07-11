@@ -13,6 +13,7 @@ import (
 
 type UserService interface {
 	Save(*requests.SignupRequest) (*models.User, error)
+	Login(*requests.LoginRequest) (*models.User, error)
 }
 
 type userService struct {
@@ -54,4 +55,26 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 	}
 
 	return &savedUser, nil
+}
+
+func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, error) {
+	user, err := us.ur.FindUserByUsername(userReq.Username)
+	if err == gorm.ErrRecordNotFound {
+		fmt.Println("[LoginService] User is not found with username")
+		return nil, errors.New("user is not found with username")
+	}
+
+	if err != nil {
+		fmt.Println("[LoginService] Error while fetching user details with username")
+		return nil, err
+	}
+
+	isValidPassword := utils.CheckPassword(user.Password, userReq.Password)
+
+	if !isValidPassword {
+		fmt.Println("[LoginService] Password is wrong")
+		return nil, errors.New("password is wrong")
+	}
+
+	return &user, nil
 }

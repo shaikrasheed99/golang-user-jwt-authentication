@@ -37,12 +37,12 @@ func (ur *userRepository) FindUserByUsername(username string) (models.User, erro
 
 	res := ur.db.Where("username = ?", username).Find(&user)
 	if res.Error != nil {
-		fmt.Println("[SaveRepository] Error while finding user by username")
+		fmt.Println("[FindUserByUsername] Error while finding user by username")
 		return models.User{}, res.Error
 	}
 
 	if res.RowsAffected == 0 {
-		fmt.Println("[SaveRepository] No users found by username")
+		fmt.Println("[FindUserByUsername] User is not found with username")
 		return models.User{}, gorm.ErrRecordNotFound
 	}
 

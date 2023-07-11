@@ -13,6 +13,7 @@ import (
 
 type UserController interface {
 	Signup(*gin.Context)
+	Login(*gin.Context)
 	Health(*gin.Context)
 }
 
@@ -28,7 +29,6 @@ func NewUserController(us services.UserService) UserController {
 
 func (uc *userController) Signup(c *gin.Context) {
 	var req *requests.SignupRequest
-
 	if err := c.ShouldBindJSON(&req); err != nil {
 		fmt.Println("[Signup]", err.Error())
 		errRes := createErrorResponse(http.StatusBadRequest, err.Error())
@@ -55,6 +55,37 @@ func (uc *userController) Signup(c *gin.Context) {
 	res := createSuccessResponse(http.StatusOK, "successfully saved user details", savedUserRes)
 
 	c.JSON(http.StatusCreated, res)
+}
+
+func (uc *userController) Login(c *gin.Context) {
+	var req *requests.LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println("[Login]", err.Error())
+		errRes := createErrorResponse(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	user, err := uc.us.Login(req)
+	if err != nil {
+		fmt.Println("[Login]", err.Error())
+		errRes := createErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	userRes := responses.SavedUserResponse{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Username:  user.Username,
+		Email:     user.Email,
+	}
+
+	res := createSuccessResponse(http.StatusOK, "successfully saved user details", userRes)
+
+	c.JSON(http.StatusCreated, res)
+
 }
 
 func createSuccessResponse(code int, message string, data interface{}) responses.SuccessResponse {
