@@ -25,7 +25,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 func (ur *userRepository) Save(user *models.User) (models.User, error) {
 	res := ur.db.Create(&user)
 	if res.Error != nil {
-		fmt.Println("Error while saving the user")
+		fmt.Println("[SaveRepository] Error while saving the user")
 		return models.User{}, res.Error
 	}
 
@@ -37,12 +37,12 @@ func (ur *userRepository) FindUserByUsername(username string) (models.User, erro
 
 	res := ur.db.Where("username = ?", username).Find(&user)
 	if res.Error != nil {
-		fmt.Println("Error while finding user by username")
+		fmt.Println("[SaveRepository] Error while finding user by username")
 		return models.User{}, res.Error
 	}
 
 	if res.RowsAffected == 0 {
-		fmt.Println("No users found by username")
+		fmt.Println("[SaveRepository] No users found by username")
 		return models.User{}, gorm.ErrRecordNotFound
 	}
 

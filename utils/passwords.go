@@ -9,7 +9,7 @@ import (
 func GenerateHashedPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		fmt.Println("Error while generating hashed password")
+		fmt.Println("[GenerateHashedPassword] Error while generating hashed password")
 		return "", err
 	}
 
@@ -18,7 +18,7 @@ func GenerateHashedPassword(password string) (string, error) {
 
 func CheckPassword(hashedPass string, inputPass string) bool {
 	if err := bcrypt.CompareHashAndPassword([]byte(hashedPass), []byte(inputPass)); err != nil {
-		fmt.Println("Error while comparing password")
+		fmt.Println("[CheckPassword] Passwords are not equal")
 		return false
 	}
 

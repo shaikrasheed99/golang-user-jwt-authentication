@@ -30,7 +30,7 @@ func (uc *userController) Signup(c *gin.Context) {
 	var req *requests.SignupRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("[Signup]", err.Error())
 		errRes := createErrorResponse(http.StatusBadRequest, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
@@ -38,7 +38,7 @@ func (uc *userController) Signup(c *gin.Context) {
 
 	savedUser, err := uc.us.Save(req)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("[Signup]", err.Error())
 		errRes := createErrorResponse(http.StatusInternalServerError, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
 		return

@@ -12,7 +12,7 @@ func InitDatabase() *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("[InitDatabase]", err.Error())
 	}
 
 	return db

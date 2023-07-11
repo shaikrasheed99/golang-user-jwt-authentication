@@ -28,14 +28,14 @@ func NewUserService(ur repositories.UserRepository) UserService {
 func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, error) {
 	hashedPass, err := utils.GenerateHashedPassword(userReq.Password)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("[SaveService]", err.Error())
 		return nil, err
 	}
 
 	_, err = us.ur.FindUserByUsername(userReq.Username)
 
 	if err != gorm.ErrRecordNotFound {
-		fmt.Println("User is already exists with username")
+		fmt.Println("[SaveService] User is already exists with username")
 		return nil, errors.New("user is already exists with username")
 	}
 
@@ -49,7 +49,7 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 
 	savedUser, err := us.ur.Save(newUser)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("[SaveService]", err.Error())
 		return nil, err
 	}
 

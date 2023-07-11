@@ -10,7 +10,7 @@ import (
 func GetDSNString() string {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("[GetDSNString]", err.Error())
 	}
 
 	host := os.Getenv("DB_HOST")
