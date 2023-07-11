@@ -12,7 +12,7 @@ const (
 )
 
 func RegisterUserRoutes(engine *gin.Engine, uc controllers.UserController) {
-	engine.POST(SignupUserEndpoint, uc.Signup)
-	engine.POST(LoginUserEndpoint, uc.Login)
+	engine.POST(SignupUserEndpoint, uc.SignupHandler)
+	engine.POST(LoginUserEndpoint, uc.LoginHandler)
 	engine.GET(HealthEndpint, uc.Health)
 }

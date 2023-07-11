@@ -12,8 +12,8 @@ import (
 )
 
 type UserController interface {
-	Signup(*gin.Context)
-	Login(*gin.Context)
+	SignupHandler(*gin.Context)
+	LoginHandler(*gin.Context)
 	Health(*gin.Context)
 }
 
@@ -27,10 +27,10 @@ func NewUserController(us services.UserService) UserController {
 	}
 }
 
-func (uc *userController) Signup(c *gin.Context) {
+func (uc *userController) SignupHandler(c *gin.Context) {
 	var req *requests.SignupRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		fmt.Println("[Signup]", err.Error())
+		fmt.Println("[SignupHandler]", err.Error())
 		errRes := createErrorResponse(http.StatusBadRequest, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
@@ -38,7 +38,7 @@ func (uc *userController) Signup(c *gin.Context) {
 
 	savedUser, err := uc.us.Save(req)
 	if err != nil {
-		fmt.Println("[Signup]", err.Error())
+		fmt.Println("[SignupHandler]", err.Error())
 		errRes := createErrorResponse(http.StatusInternalServerError, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
 		return
@@ -57,10 +57,10 @@ func (uc *userController) Signup(c *gin.Context) {
 	c.JSON(http.StatusCreated, res)
 }
 
-func (uc *userController) Login(c *gin.Context) {
+func (uc *userController) LoginHandler(c *gin.Context) {
 	var req *requests.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		fmt.Println("[Login]", err.Error())
+		fmt.Println("[LoginHandler]", err.Error())
 		errRes := createErrorResponse(http.StatusBadRequest, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
@@ -68,7 +68,7 @@ func (uc *userController) Login(c *gin.Context) {
 
 	user, err := uc.us.Login(req)
 	if err != nil {
-		fmt.Println("[Login]", err.Error())
+		fmt.Println("[LoginHandler]", err.Error())
 		errRes := createErrorResponse(http.StatusInternalServerError, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
 		return
@@ -82,7 +82,7 @@ func (uc *userController) Login(c *gin.Context) {
 		Email:     user.Email,
 	}
 
-	res := createSuccessResponse(http.StatusOK, "successfully saved user details", userRes)
+	res := createSuccessResponse(http.StatusOK, "successfully logged in", userRes)
 
 	c.JSON(http.StatusCreated, res)
 
