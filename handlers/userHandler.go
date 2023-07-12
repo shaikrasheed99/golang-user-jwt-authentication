@@ -1,4 +1,4 @@
-package controllers
+package handlers
 
 import (
 	"fmt"
@@ -12,26 +12,26 @@ import (
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
 )
 
-type UserController interface {
+type UserHandler interface {
 	SignupHandler(*gin.Context)
 	LoginHandler(*gin.Context)
 	UserByUsernameHandler(*gin.Context)
 	Health(*gin.Context)
 }
 
-type userController struct {
+type userHandler struct {
 	us services.UserService
 }
 
-func NewUserController(us services.UserService) UserController {
-	fmt.Println("[NewUserController] Initiating New User Controller")
-	return &userController{
+func NewUserHandler(us services.UserService) UserHandler {
+	fmt.Println("[NewUserHandler] Initiating New User Handler")
+	return &userHandler{
 		us: us,
 	}
 }
 
-func (uc *userController) SignupHandler(c *gin.Context) {
-	fmt.Println("[SignupHandler] Hitting signup handler function in user controller")
+func (uc *userHandler) SignupHandler(c *gin.Context) {
+	fmt.Println("[SignupHandler] Hitting signup handler function in user handler")
 
 	var req *requests.SignupRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -62,8 +62,8 @@ func (uc *userController) SignupHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, res)
 }
 
-func (uc *userController) LoginHandler(c *gin.Context) {
-	fmt.Println("[LoginHandler] Hitting login handler function in user controller")
+func (uc *userHandler) LoginHandler(c *gin.Context) {
+	fmt.Println("[LoginHandler] Hitting login handler function in user handler")
 
 	var req *requests.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -94,8 +94,8 @@ func (uc *userController) LoginHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, res)
 }
 
-func (uc *userController) UserByUsernameHandler(c *gin.Context) {
-	fmt.Println("[UserByUsernameHandler] Hitting user by username handler function in user controller")
+func (uc *userHandler) UserByUsernameHandler(c *gin.Context) {
+	fmt.Println("[UserByUsernameHandler] Hitting user by username handler function in user handler")
 
 	username := c.Param("username")
 	_, err := strconv.Atoi(username)
@@ -152,8 +152,8 @@ func createErrorResponse(code int, message string) responses.ErrorResponse {
 	return res
 }
 
-func (uc *userController) Health(c *gin.Context) {
-	fmt.Println("[Health] Hitting health function in user controller")
+func (uc *userHandler) Health(c *gin.Context) {
+	fmt.Println("[Health] Hitting health function in user handler")
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "UP!",

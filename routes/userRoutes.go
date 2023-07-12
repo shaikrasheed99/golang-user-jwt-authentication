@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/shaikrasheed99/golang-user-jwt-authentication/controllers"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/handlers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
 )
 
-func RegisterUserRoutes(engine *gin.Engine, uc controllers.UserController) {
+func RegisterUserRoutes(engine *gin.Engine, uc handlers.UserHandler) {
 	fmt.Println("[RegisterUserRoutes] Registering routes of the app")
 
 	engine.POST(utils.SignupUserEndpoint, uc.SignupHandler)
