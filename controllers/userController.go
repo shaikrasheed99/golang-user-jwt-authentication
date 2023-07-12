@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
@@ -14,6 +15,7 @@ import (
 type UserController interface {
 	SignupHandler(*gin.Context)
 	LoginHandler(*gin.Context)
+	UserByUsernameHandler(*gin.Context)
 	Health(*gin.Context)
 }
 
@@ -85,7 +87,37 @@ func (uc *userController) LoginHandler(c *gin.Context) {
 	res := createSuccessResponse(http.StatusOK, "successfully logged in", userRes)
 
 	c.JSON(http.StatusCreated, res)
+}
 
+func (uc *userController) UserByUsernameHandler(c *gin.Context) {
+	username := c.Param("username")
+	_, err := strconv.Atoi(username)
+	if err == nil || username == "" {
+		fmt.Println("[UserByUsernameHandler]", err.Error())
+		errRes := createErrorResponse(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	user, err := uc.us.UserByUsername(username)
+	if err != nil {
+		fmt.Println("[UserByUsernameHandler]", err.Error())
+		errRes := createErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	userRes := responses.SavedUserResponse{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Username:  user.Username,
+		Email:     user.Email,
+	}
+
+	res := createSuccessResponse(http.StatusOK, "successfully got user details", userRes)
+
+	c.JSON(http.StatusCreated, res)
 }
 
 func createSuccessResponse(code int, message string, data interface{}) responses.SuccessResponse {

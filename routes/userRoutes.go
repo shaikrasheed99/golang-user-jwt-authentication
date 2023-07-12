@@ -9,5 +9,6 @@ import (
 func RegisterUserRoutes(engine *gin.Engine, uc controllers.UserController) {
 	engine.POST(utils.SignupUserEndpoint, uc.SignupHandler)
 	engine.POST(utils.LoginUserEndpoint, uc.LoginHandler)
+	engine.GET(utils.UserByUsernameEndpoint, uc.UserByUsernameHandler)
 	engine.GET(utils.HealthEndpint, uc.Health)
 }
