@@ -22,12 +22,15 @@ type userService struct {
 }
 
 func NewUserService(ur repositories.UserRepository) UserService {
+	fmt.Println("[NewUserService] Initiating New User Service")
 	return &userService{
 		ur: ur,
 	}
 }
 
 func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, error) {
+	fmt.Println("[SaveService] Hitting save function in user service")
+
 	hashedPass, err := utils.GenerateHashedPassword(userReq.Password)
 	if err != nil {
 		fmt.Println("[SaveService]", err.Error())
@@ -55,10 +58,13 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 		return nil, err
 	}
 
+	fmt.Println("[SaveService] Returned saved user deatils from repository")
 	return &savedUser, nil
 }
 
 func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, error) {
+	fmt.Println("[LoginService] Hitting login function in user service")
+
 	user, err := us.ur.FindUserByUsername(userReq.Username)
 	if err == gorm.ErrRecordNotFound {
 		fmt.Println("[LoginService] User is not found with username")
@@ -77,20 +83,24 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 		return nil, errors.New("password is wrong")
 	}
 
+	fmt.Println("[LoginService] Returned logined user deatils from repository")
 	return &user, nil
 }
 
 func (us *userService) UserByUsername(username string) (*models.User, error) {
+	fmt.Println("[UserByUsername] Hitting login function in user service")
+
 	user, err := us.ur.FindUserByUsername(username)
 	if err == gorm.ErrRecordNotFound {
-		fmt.Println("[LoginService] User is not found with username")
+		fmt.Println("[UserByUsername] User is not found with username")
 		return nil, errors.New("user is not found with username")
 	}
 
 	if err != nil {
-		fmt.Println("[LoginService] Error while fetching user details with username")
+		fmt.Println("[UserByUsername] Error while fetching user details with username")
 		return nil, err
 	}
 
+	fmt.Println("[UserByUsername] Returned user details by username from repository")
 	return &user, nil
 }

@@ -24,12 +24,15 @@ type userController struct {
 }
 
 func NewUserController(us services.UserService) UserController {
+	fmt.Println("[NewUserController] Initiating New User Controller")
 	return &userController{
 		us: us,
 	}
 }
 
 func (uc *userController) SignupHandler(c *gin.Context) {
+	fmt.Println("[SignupHandler] Hitting signup handler function in user controller")
+
 	var req *requests.SignupRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		fmt.Println("[SignupHandler]", err.Error())
@@ -60,6 +63,8 @@ func (uc *userController) SignupHandler(c *gin.Context) {
 }
 
 func (uc *userController) LoginHandler(c *gin.Context) {
+	fmt.Println("[LoginHandler] Hitting login handler function in user controller")
+
 	var req *requests.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		fmt.Println("[LoginHandler]", err.Error())
@@ -90,6 +95,8 @@ func (uc *userController) LoginHandler(c *gin.Context) {
 }
 
 func (uc *userController) UserByUsernameHandler(c *gin.Context) {
+	fmt.Println("[UserByUsernameHandler] Hitting user by username handler function in user controller")
+
 	username := c.Param("username")
 	_, err := strconv.Atoi(username)
 	if err == nil || username == "" {
@@ -121,6 +128,8 @@ func (uc *userController) UserByUsernameHandler(c *gin.Context) {
 }
 
 func createSuccessResponse(code int, message string, data interface{}) responses.SuccessResponse {
+	fmt.Println("[createSuccessResponse] Creating success response")
+
 	res := responses.SuccessResponse{
 		Status:  utils.Success,
 		Code:    http.StatusText(code),
@@ -132,6 +141,8 @@ func createSuccessResponse(code int, message string, data interface{}) responses
 }
 
 func createErrorResponse(code int, message string) responses.ErrorResponse {
+	fmt.Println("[createErrorResponse] Creating error response")
+
 	res := responses.ErrorResponse{
 		Status:  utils.Error,
 		Code:    http.StatusText(code),
@@ -142,6 +153,8 @@ func createErrorResponse(code int, message string) responses.ErrorResponse {
 }
 
 func (uc *userController) Health(c *gin.Context) {
+	fmt.Println("[Health] Hitting health function in user controller")
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "UP!",
 	})

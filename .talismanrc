@@ -6,7 +6,7 @@ fileignoreconfig:
   - filename: requests/signupRequest.go
     checksum: 106af6e703d7b6a86afa95e592b0947f3fb7a0af461ca7f5f79035527507f9a7
   - filename: utils/passwords.go
-    checksum: 9b33d655cdd21fdaf1f5d613619415016de94fb331df420cd2ccf3bf5d1b2c2b
+    checksum: 9bca3fa8b8439b12922416c9155830b59235cd3774f91f34255301b536d33c64
   - filename: services/userService.go
     checksum: b10fb7c4edf3851250ca83a9b28bd3d88b5803eee194447dca93c381fea4513c
   - filename: requests/loginRequest.go
