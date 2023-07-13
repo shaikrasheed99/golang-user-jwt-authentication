@@ -1,6 +1,6 @@
 package responses
 
-type SavedUserResponse struct {
+type UserResponse struct {
 	ID        uint   `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
