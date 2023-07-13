@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Save(*models.User) (models.User, error)
 	FindUserByUsername(username string) (models.User, error)
+	FindAllUsers() ([]models.User, error)
 }
 
 type userRepository struct {
@@ -37,20 +38,34 @@ func (ur *userRepository) Save(user *models.User) (models.User, error) {
 }
 
 func (ur *userRepository) FindUserByUsername(username string) (models.User, error) {
-	fmt.Println("[FindUserByUsername] Hitting find user details by username function in user repository")
+	fmt.Println("[FindUserByUsernamRepository] Hitting find user details by username function in user repository")
 
 	var user models.User
 	res := ur.db.Where("username = ?", username).Find(&user)
 	if res.Error != nil {
-		fmt.Println("[FindUserByUsername] Error while finding user by username")
+		fmt.Println("[FindUserByUsernamRepository] Error while finding user by username")
 		return models.User{}, res.Error
 	}
 
 	if res.RowsAffected == 0 {
-		fmt.Println("[FindUserByUsername] User is not found with username")
+		fmt.Println("[FindUserByUsernamRepository] User is not found with username")
 		return models.User{}, gorm.ErrRecordNotFound
 	}
 
-	fmt.Println("[FindUserByUsername] Found user deatils of a user by username")
+	fmt.Println("[FindUserByUsernamRepository] Found user deatils of a user by username")
 	return user, nil
+}
+
+func (ur *userRepository) FindAllUsers() ([]models.User, error) {
+	fmt.Println("[FindAllUsersRepository] Hitting find all user function in user repository")
+
+	var users []models.User
+	res := ur.db.Find(&users)
+	if res.Error != nil {
+		fmt.Println("[FindAllUsersRepository] Error while finding list of users")
+		return nil, res.Error
+	}
+
+	fmt.Println("[FindAllUsersRepository] Found list of users")
+	return users, nil
 }

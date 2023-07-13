@@ -17,6 +17,7 @@ type UserHandler interface {
 	SignupHandler(*gin.Context)
 	LoginHandler(*gin.Context)
 	UserByUsernameHandler(*gin.Context)
+	GetAllUsers(*gin.Context)
 	Health(*gin.Context)
 }
 
@@ -103,6 +104,26 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 
 	userRes := createUserResponse(user)
 	res := createSuccessResponse(http.StatusOK, "successfully got user details", userRes)
+
+	c.JSON(http.StatusOK, res)
+}
+func (uh *userHandler) GetAllUsers(c *gin.Context) {
+	fmt.Println("[GetAllUsersHandler] Hitting get all users handler function in user handler")
+
+	userList, err := uh.us.GetAllUsers()
+	if err != nil {
+		fmt.Println("[GetAllUsersHandler]", err.Error())
+		errRes := createErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	var users []responses.UserResponse
+	for _, user := range userList {
+		users = append(users, createUserResponse(&user))
+	}
+
+	res := createSuccessResponse(http.StatusOK, "successfully got list of users", users)
 
 	c.JSON(http.StatusOK, res)
 }

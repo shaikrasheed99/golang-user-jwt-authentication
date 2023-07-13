@@ -14,5 +14,6 @@ func RegisterUserRoutes(engine *gin.Engine, uc handlers.UserHandler) {
 	engine.POST(utils.SignupUserEndpoint, uc.SignupHandler)
 	engine.POST(utils.LoginUserEndpoint, uc.LoginHandler)
 	engine.GET(utils.UserByUsernameEndpoint, uc.UserByUsernameHandler)
+	engine.GET(utils.GetAllUsersEndpoint, uc.GetAllUsers)
 	engine.GET(utils.HealthEndpint, uc.Health)
 }
