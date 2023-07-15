@@ -10,7 +10,7 @@ import (
 )
 
 func CreateUserResponse(user *models.User) responses.UserResponse {
-	fmt.Println("[createUserResponse] Creating user response")
+	fmt.Println("[CreateUserResponse] Creating user response")
 
 	return responses.UserResponse{
 		ID:        user.ID,
@@ -22,7 +22,7 @@ func CreateUserResponse(user *models.User) responses.UserResponse {
 }
 
 func CreateSuccessResponse(code int, message string, data interface{}) responses.SuccessResponse {
-	fmt.Println("[createSuccessResponse] Creating success response")
+	fmt.Println("[CreateSuccessResponse] Creating success response")
 
 	return responses.SuccessResponse{
 		Status:  utils.Success,
@@ -33,7 +33,7 @@ func CreateSuccessResponse(code int, message string, data interface{}) responses
 }
 
 func CreateErrorResponse(code int, message string) responses.ErrorResponse {
-	fmt.Println("[createErrorResponse] Creating error response")
+	fmt.Println("[CreateErrorResponse] Creating error response")
 
 	return responses.ErrorResponse{
 		Status:  utils.Error,

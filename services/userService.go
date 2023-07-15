@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/models"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
-	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +32,7 @@ func NewUserService(ur repositories.UserRepository) UserService {
 func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, error) {
 	fmt.Println("[SaveService] Hitting save function in user service")
 
-	hashedPass, err := utils.GenerateHashedPassword(userReq.Password)
+	hashedPass, err := helpers.GenerateHashedPassword(userReq.Password)
 	if err != nil {
 		fmt.Println("[SaveService]", err.Error())
 		return nil, err
@@ -77,7 +77,7 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 		return nil, err
 	}
 
-	isValidPassword := utils.CheckPassword(user.Password, userReq.Password)
+	isValidPassword := helpers.CheckPassword(user.Password, userReq.Password)
 
 	if !isValidPassword {
 		fmt.Println("[LoginService] Password is wrong")
