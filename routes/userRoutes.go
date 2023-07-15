@@ -4,16 +4,15 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/handlers"
-	"github.com/shaikrasheed99/golang-user-jwt-authentication/utils"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/middlewares"
 )
 
 func RegisterUserRoutes(engine *gin.Engine, uc handlers.UserHandler) {
-	fmt.Println("[RegisterUserRoutes] Registering routes of the app")
+	fmt.Println("[RegisterUserRoutes] Registering user routes of the app")
 
-	engine.POST(utils.SignupUserEndpoint, uc.SignupHandler)
-	engine.POST(utils.LoginUserEndpoint, uc.LoginHandler)
-	engine.GET(utils.UserByUsernameEndpoint, uc.UserByUsernameHandler)
-	engine.GET(utils.GetAllUsersEndpoint, uc.GetAllUsers)
-	engine.GET(utils.HealthEndpint, uc.Health)
+	engine.Use(middlewares.Authenticator)
+	engine.GET(constants.UserByUsernameEndpoint, uc.UserByUsernameHandler)
+	engine.GET(constants.GetAllUsersEndpoint, uc.GetAllUsers)
 }

@@ -20,6 +20,7 @@ func main() {
 
 	app := gin.Default()
 
+	routes.RegisterAuthRoutes(app, uc)
 	routes.RegisterUserRoutes(app, uc)
 
 	app.Run()
