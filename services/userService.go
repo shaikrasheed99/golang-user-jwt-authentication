@@ -85,7 +85,7 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 		return nil, errors.New("password is wrong")
 	}
 
-	fmt.Println("[LoginService] Returned logined user deatils from repository")
+	fmt.Println("[LoginService] Returned logged in user deatils from repository")
 	return &user, nil
 }
 

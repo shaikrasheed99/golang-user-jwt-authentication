@@ -15,13 +15,15 @@ type authClaims struct {
 }
 
 func GenerateToken(username string, role string) (string, string, error) {
+	fmt.Println("[GenerateToken] Generating access and refresh tokens")
+
 	accessTokenClaims := &authClaims{
 		Username: username,
 		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer: "user1",
 			ExpiresAt: &jwt.NumericDate{
-				Time: time.Now().Add(time.Minute * 1),
+				Time: time.Now().Add(time.Minute * 5),
 			},
 			IssuedAt: &jwt.NumericDate{
 				Time: time.Now(),
@@ -31,6 +33,7 @@ func GenerateToken(username string, role string) (string, string, error) {
 
 	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims).SignedString([]byte("thisismysecretkey"))
 	if err != nil {
+		fmt.Println("[GenerateToken]", err.Error())
 		return "", "", err
 	}
 
@@ -44,37 +47,48 @@ func GenerateToken(username string, role string) (string, string, error) {
 
 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims).SignedString([]byte("thisismysecretkey"))
 	if err != nil {
+		fmt.Println("[GenerateToken]", err.Error())
 		return "", "", err
 	}
 
+	fmt.Println("[GenerateToken] Generated access and refresh tokens")
 	return accessToken, refreshToken, nil
 }
 
-func ValidateToken(signedToken string) (*jwt.Token, error) {
+func ValidateToken(signedToken string) (*authClaims, error) {
+	fmt.Println("[ValidateToken] Validating access tokens")
+
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&authClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
 				message := fmt.Sprintln("invalid token ", token.Header["alg"])
+				fmt.Println("[ValidateToken]", message)
 				return nil, errors.New(message)
 			}
 			return []byte("thisismysecretkey"), nil
 		},
 	)
 
-	if err != nil {
+	if err != nil || !token.Valid {
+		fmt.Println("[ValidateToken]", err.Error())
 		return nil, err
 	}
 
 	claims, ok := token.Claims.(*authClaims)
 	if !ok {
-		return nil, err
+		errMessage := "invalid token"
+		fmt.Println("[ValidateToken]", errMessage)
+		return nil, errors.New(errMessage)
 	}
 
 	if claims.ExpiresAt.Time.Before(time.Now()) {
-		return nil, errors.New("token has expired")
+		errMessage := "token has expired"
+		fmt.Println("[ValidateToken]", errMessage)
+		return nil, errors.New(errMessage)
 	}
 
-	return token, nil
+	fmt.Println("[ValidateToken] Validated access tokens")
+	return claims, nil
 }
