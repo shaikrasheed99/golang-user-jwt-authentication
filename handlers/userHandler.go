@@ -50,7 +50,15 @@ func (uh *userHandler) SignupHandler(c *gin.Context) {
 		return
 	}
 
-	savedUserRes := helpers.CreateUserResponse(savedUser)
+	accessToken, refreshToken, err := helpers.GenerateToken(savedUser.Username, savedUser.Role)
+	if err != nil {
+		fmt.Println("[SignupHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	savedUserRes := helpers.CreateAuthenticationResponse(savedUser, accessToken, refreshToken)
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully saved user details", savedUserRes)
 
 	c.JSON(http.StatusCreated, res)
@@ -75,7 +83,15 @@ func (uh *userHandler) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	userRes := helpers.CreateUserResponse(user)
+	accessToken, refreshToken, err := helpers.GenerateToken(user.Username, user.Role)
+	if err != nil {
+		fmt.Println("[LoginHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	userRes := helpers.CreateAuthenticationResponse(user, accessToken, refreshToken)
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged in", userRes)
 
 	c.JSON(http.StatusOK, res)
