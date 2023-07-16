@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/responses"
@@ -105,9 +107,18 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 	username := c.Param("username")
 	_, err := strconv.Atoi(username)
 	if err == nil || username == "" {
-		fmt.Println("[UserByUsernameHandler]", err.Error())
-		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, err.Error())
+		errMessage := constants.InvalidUsernameErrorMessage
+		fmt.Println("[UserByUsernameHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, errMessage)
 		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	if !isUserMatchesWith(c, username) {
+		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		fmt.Println("[UserByUsernameHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
+		c.JSON(http.StatusUnauthorized, errRes)
 		return
 	}
 
@@ -129,6 +140,14 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 func (uh *userHandler) GetAllUsers(c *gin.Context) {
 	fmt.Println("[GetAllUsersHandler] Hitting get all users handler function in user handler")
 
+	if !isAdmin(c) {
+		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		fmt.Println("[GetAllUsersHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
+		c.JSON(http.StatusUnauthorized, errRes)
+		return
+	}
+
 	userList, err := uh.us.GetAllUsers()
 	if err != nil {
 		fmt.Println("[GetAllUsersHandler]", err.Error())
@@ -146,6 +165,51 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 
 	fmt.Println("[GetAllUsersHandler] Finished execution of get all users handler")
 	c.JSON(http.StatusOK, res)
+}
+
+func isUserMatchesWith(c *gin.Context, inputUsername string) bool {
+	if isAdmin(c) {
+		return true
+	}
+
+	if !isUser(c) {
+		return false
+	}
+
+	username := c.GetString("username")
+	if isEmpty(username) || !isEqual(username, inputUsername) {
+		return false
+	}
+
+	return true
+}
+
+func isAdmin(c *gin.Context) bool {
+	role := c.GetString("role")
+	if isEmpty(role) || !isEqual(role, "admin") {
+		return false
+	}
+
+	return true
+}
+
+func isUser(c *gin.Context) bool {
+	role := c.GetString("role")
+	if isEmpty(role) || !isEqual(role, "user") {
+		return false
+	}
+
+	return true
+}
+
+func isEmpty(value string) bool {
+	return value == ""
+}
+
+func isEqual(valueOne string, valueTwo string) bool {
+	valueOne = strings.ToLower(valueOne)
+	valueTwo = strings.ToLower(valueTwo)
+	return valueOne == valueTwo
 }
 
 func (uh *userHandler) Health(c *gin.Context) {

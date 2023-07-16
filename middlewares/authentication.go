@@ -18,8 +18,8 @@ func Authentication(c *gin.Context) {
 	if tokenString == "" {
 		errMessage := constants.NoAuthHeaderErrorMessage
 		fmt.Println("[AuthenticationMiddleware]", errMessage)
-		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, errMessage)
-		c.JSON(http.StatusForbidden, errRes)
+		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, errMessage)
+		c.JSON(http.StatusBadRequest, errRes)
 		c.Abort()
 		return
 	}
@@ -27,8 +27,8 @@ func Authentication(c *gin.Context) {
 	claims, err := helpers.ValidateToken(tokenString)
 	if err != nil {
 		fmt.Println("[AuthenticationMiddleware]", err.Error())
-		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
-		c.JSON(http.StatusForbidden, errRes)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, err.Error())
+		c.JSON(http.StatusUnauthorized, errRes)
 		c.Abort()
 		return
 	}
