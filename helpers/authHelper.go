@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 )
 
 type authClaims struct {
@@ -78,13 +79,13 @@ func ValidateToken(signedToken string) (*authClaims, error) {
 
 	claims, ok := token.Claims.(*authClaims)
 	if !ok {
-		errMessage := "invalid token"
+		errMessage := constants.InvalidTokenErrorMessage
 		fmt.Println("[ValidateTokenHelper]", errMessage)
 		return nil, errors.New(errMessage)
 	}
 
 	if claims.ExpiresAt.Time.Before(time.Now()) {
-		errMessage := "token has expired"
+		errMessage := constants.ExpiredTokenErrorMessage
 		fmt.Println("[ValidateTokenHelper]", errMessage)
 		return nil, errors.New(errMessage)
 	}

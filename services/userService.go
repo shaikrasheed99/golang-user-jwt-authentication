@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/models"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
@@ -41,8 +42,9 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 	_, err = us.ur.FindUserByUsername(userReq.Username)
 
 	if err != gorm.ErrRecordNotFound {
-		fmt.Println("[SaveService] User is already exists with username")
-		return nil, errors.New("user is already exists with username")
+		errMessage := constants.UserAlreadyExistsErrorMessage
+		fmt.Println("[SaveService]", errMessage)
+		return nil, errors.New(errMessage)
 	}
 
 	newUser := &models.User{
@@ -69,8 +71,9 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 
 	user, err := us.ur.FindUserByUsername(userReq.Username)
 	if err == gorm.ErrRecordNotFound {
-		fmt.Println("[LoginService] User is not found with username")
-		return nil, errors.New("user is not found with username")
+		errMessage := constants.UserNotFoundErrorMessage
+		fmt.Println("[LoginService]", errMessage)
+		return nil, errors.New(errMessage)
 	}
 
 	if err != nil {
@@ -81,8 +84,9 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 	isValidPassword := helpers.CheckPassword(user.Password, userReq.Password)
 
 	if !isValidPassword {
-		fmt.Println("[LoginService] Password is wrong")
-		return nil, errors.New("password is wrong")
+		errMessage := constants.WrongPasswordErrorMessage
+		fmt.Println("[LoginService]", errMessage)
+		return nil, errors.New(errMessage)
 	}
 
 	fmt.Println("[LoginService] Returned logged in user deatils from repository")
@@ -94,8 +98,9 @@ func (us *userService) UserByUsername(username string) (*models.User, error) {
 
 	user, err := us.ur.FindUserByUsername(username)
 	if err == gorm.ErrRecordNotFound {
-		fmt.Println("[UserByUsernameService] User is not found with username")
-		return nil, errors.New("user is not found with username")
+		errMessage := constants.UserNotFoundErrorMessage
+		fmt.Println("[UserByUsernameService]", errMessage)
+		return nil, errors.New(errMessage)
 	}
 
 	if err != nil {

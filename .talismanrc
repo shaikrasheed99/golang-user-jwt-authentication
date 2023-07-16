@@ -11,4 +11,6 @@ fileignoreconfig:
     checksum: 21b13707a23ed417153d92825f9f1eeca083d29b00d54a0c4d7c5b2d27c8d63b
   - filename: requests/loginRequest.go
     checksum: 8daa5cf7ce7d177e212b05a30f34deca2be64d4a7b9bae188bb2372ee412eee9
+  - filename: constants/constants.go
+    checksum: 61b64431d0670225d941b856f8cac9b8573266e8ed72f5d78afb9076322786e9
 version: ""
