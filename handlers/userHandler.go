@@ -61,6 +61,7 @@ func (uh *userHandler) SignupHandler(c *gin.Context) {
 	savedUserRes := helpers.CreateAuthenticationResponse(savedUser, accessToken, refreshToken)
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully saved user details", savedUserRes)
 
+	fmt.Println("[SignupHandler] Finished execution of signup handler")
 	c.JSON(http.StatusCreated, res)
 }
 
@@ -94,6 +95,7 @@ func (uh *userHandler) LoginHandler(c *gin.Context) {
 	userRes := helpers.CreateAuthenticationResponse(user, accessToken, refreshToken)
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged in", userRes)
 
+	fmt.Println("[LoginHandler] Finished execution of login handler")
 	c.JSON(http.StatusOK, res)
 }
 
@@ -120,6 +122,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 	userRes := helpers.CreateUserResponse(user)
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully got user details", userRes)
 
+	fmt.Println("[UserByUsernameHandler] Finished execution of user by username handler")
 	c.JSON(http.StatusOK, res)
 }
 
@@ -141,11 +144,12 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully got list of users", users)
 
+	fmt.Println("[GetAllUsersHandler] Finished execution of get all users handler")
 	c.JSON(http.StatusOK, res)
 }
 
 func (uh *userHandler) Health(c *gin.Context) {
-	fmt.Println("[Health] Hitting health function in user handler")
+	fmt.Println("[HealthHandler] Hitting health function in user handler")
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "UP!",

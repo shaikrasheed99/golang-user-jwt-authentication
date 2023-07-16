@@ -15,7 +15,7 @@ type authClaims struct {
 }
 
 func GenerateToken(username string, role string) (string, string, error) {
-	fmt.Println("[GenerateToken] Generating access and refresh tokens")
+	fmt.Println("[GenerateTokenHelper] Generating access and refresh tokens")
 
 	accessTokenClaims := &authClaims{
 		Username: username,
@@ -33,7 +33,7 @@ func GenerateToken(username string, role string) (string, string, error) {
 
 	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims).SignedString([]byte("thisismysecretkey"))
 	if err != nil {
-		fmt.Println("[GenerateToken]", err.Error())
+		fmt.Println("[GenerateTokenHelper]", err.Error())
 		return "", "", err
 	}
 
@@ -47,16 +47,16 @@ func GenerateToken(username string, role string) (string, string, error) {
 
 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims).SignedString([]byte("thisismysecretkey"))
 	if err != nil {
-		fmt.Println("[GenerateToken]", err.Error())
+		fmt.Println("[GenerateTokenHelper]", err.Error())
 		return "", "", err
 	}
 
-	fmt.Println("[GenerateToken] Generated access and refresh tokens")
+	fmt.Println("[GenerateTokenHelper] Generated access and refresh tokens")
 	return accessToken, refreshToken, nil
 }
 
 func ValidateToken(signedToken string) (*authClaims, error) {
-	fmt.Println("[ValidateToken] Validating access tokens")
+	fmt.Println("[ValidateTokenHelper] Validating access token")
 
 	token, err := jwt.ParseWithClaims(
 		signedToken,
@@ -72,23 +72,23 @@ func ValidateToken(signedToken string) (*authClaims, error) {
 	)
 
 	if err != nil || !token.Valid {
-		fmt.Println("[ValidateToken]", err.Error())
+		fmt.Println("[ValidateTokenHelper]", err.Error())
 		return nil, err
 	}
 
 	claims, ok := token.Claims.(*authClaims)
 	if !ok {
 		errMessage := "invalid token"
-		fmt.Println("[ValidateToken]", errMessage)
+		fmt.Println("[ValidateTokenHelper]", errMessage)
 		return nil, errors.New(errMessage)
 	}
 
 	if claims.ExpiresAt.Time.Before(time.Now()) {
 		errMessage := "token has expired"
-		fmt.Println("[ValidateToken]", errMessage)
+		fmt.Println("[ValidateTokenHelper]", errMessage)
 		return nil, errors.New(errMessage)
 	}
 
-	fmt.Println("[ValidateToken] Validated access tokens")
+	fmt.Println("[ValidateTokenHelper] Validated access token")
 	return claims, nil
 }

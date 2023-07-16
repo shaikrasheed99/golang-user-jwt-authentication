@@ -18,6 +18,6 @@ func InitDatabase() *gorm.DB {
 		return nil
 	}
 
-	fmt.Println("[InitDatabase] Database connect has established")
+	fmt.Println("[InitDatabase] Database connection has established")
 	return db
 }

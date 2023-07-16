@@ -103,7 +103,7 @@ func (us *userService) UserByUsername(username string) (*models.User, error) {
 		return nil, err
 	}
 
-	fmt.Println("[UserByUsernameService] Returned user details by username from repository")
+	fmt.Println("[UserByUsernameService] Returned user details from repository")
 	return &user, nil
 }
 

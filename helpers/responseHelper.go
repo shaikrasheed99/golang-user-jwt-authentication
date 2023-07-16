@@ -10,7 +10,7 @@ import (
 )
 
 func CreateSuccessResponse(code int, message string, data interface{}) responses.SuccessResponse {
-	fmt.Println("[CreateSuccessResponse] Creating success response")
+	fmt.Println("[CreateSuccessResponseHelper] Creating success response")
 
 	return responses.SuccessResponse{
 		Status:  constants.Success,
@@ -21,7 +21,7 @@ func CreateSuccessResponse(code int, message string, data interface{}) responses
 }
 
 func CreateErrorResponse(code int, message string) responses.ErrorResponse {
-	fmt.Println("[CreateErrorResponse] Creating error response")
+	fmt.Println("[CreateErrorResponseHelper] Creating error response")
 
 	return responses.ErrorResponse{
 		Status:  constants.Error,
@@ -31,7 +31,7 @@ func CreateErrorResponse(code int, message string) responses.ErrorResponse {
 }
 
 func CreateUserResponse(user *models.User) responses.UserResponse {
-	fmt.Println("[CreateUserResponse] Creating user response")
+	fmt.Println("[CreateUserResponseHelper] Creating user response")
 
 	return responses.UserResponse{
 		ID:        user.ID,
@@ -44,7 +44,7 @@ func CreateUserResponse(user *models.User) responses.UserResponse {
 }
 
 func CreateAuthenticationResponse(user *models.User, accessToken, refreshToken string) responses.AuthenticationResponse {
-	fmt.Println("[CreateAuthenticationResponse] Creating authentication response")
+	fmt.Println("[CreateAuthenticationResponseHelper] Creating authentication response")
 
 	return responses.AuthenticationResponse{
 		Username:     user.Username,

@@ -52,7 +52,7 @@ func (ur *userRepository) FindUserByUsername(username string) (models.User, erro
 		return models.User{}, gorm.ErrRecordNotFound
 	}
 
-	fmt.Println("[FindUserByUsernamRepository] Found user deatils of a user by username")
+	fmt.Println("[FindUserByUsernamRepository] User deatils has found")
 	return user, nil
 }
 
@@ -66,6 +66,6 @@ func (ur *userRepository) FindAllUsers() ([]models.User, error) {
 		return nil, res.Error
 	}
 
-	fmt.Println("[FindAllUsersRepository] Found list of users")
+	fmt.Println("[FindAllUsersRepository] List of users has found")
 	return users, nil
 }
