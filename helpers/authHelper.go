@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 )
 
@@ -22,9 +23,9 @@ func GenerateToken(username string, role string) (string, string, error) {
 		Username: username,
 		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer: "user1",
+			Issuer: configs.JWT_ISSUER,
 			ExpiresAt: &jwt.NumericDate{
-				Time: time.Now().Add(time.Minute * 5),
+				Time: time.Now().Add(time.Minute * time.Duration(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES)),
 			},
 			IssuedAt: &jwt.NumericDate{
 				Time: time.Now(),
@@ -32,7 +33,7 @@ func GenerateToken(username string, role string) (string, string, error) {
 		},
 	}
 
-	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims).SignedString([]byte("thisismysecretkey"))
+	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims).SignedString([]byte(configs.JWT_SECRET))
 	if err != nil {
 		fmt.Println("[GenerateTokenHelper]", err.Error())
 		return "", "", err
@@ -41,12 +42,12 @@ func GenerateToken(username string, role string) (string, string, error) {
 	refreshTokenClaims := &authClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{
-				Time: time.Now().Add(time.Hour * 1),
+				Time: time.Now().Add(time.Minute * time.Duration(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES)),
 			},
 		},
 	}
 
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims).SignedString([]byte("thisismysecretkey"))
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims).SignedString([]byte(configs.JWT_SECRET))
 	if err != nil {
 		fmt.Println("[GenerateTokenHelper]", err.Error())
 		return "", "", err
@@ -68,7 +69,7 @@ func ValidateToken(signedToken string) (*authClaims, error) {
 				fmt.Println("[ValidateToken]", message)
 				return nil, errors.New(message)
 			}
-			return []byte("thisismysecretkey"), nil
+			return []byte(configs.JWT_SECRET), nil
 		},
 	)
 

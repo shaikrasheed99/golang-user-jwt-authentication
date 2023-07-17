@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/database"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/handlers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
@@ -10,6 +11,8 @@ import (
 )
 
 func main() {
+	configs.LoadConfigs()
+
 	db := database.InitDatabase()
 
 	ur := repositories.NewUserRepository(db)

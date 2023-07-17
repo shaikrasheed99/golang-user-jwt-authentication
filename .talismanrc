@@ -1,8 +1,8 @@
 fileignoreconfig:
   - filename: go.sum
     checksum: a68062a618f6649348f1450e7f92efd7d0c1188690a96205c4a7e595b151147e
-  - filename: database/config.go
-    checksum: c290430ee42f8526ae72261cf9a50913641505c26048c46b7f561b4424b8d214
+  - filename: configs/config.go
+    checksum: f9eea093839bb084b2eaa42fe7fc4b271e1c939d542219f80bf0346498356c0c
   - filename: requests/signupRequest.go
     checksum: 106af6e703d7b6a86afa95e592b0947f3fb7a0af461ca7f5f79035527507f9a7
   - filename: helpers/passwordHelper.go

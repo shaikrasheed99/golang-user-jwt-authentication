@@ -3,13 +3,14 @@ package database
 import (
 	"fmt"
 
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func InitDatabase() *gorm.DB {
 	fmt.Println("[InitDatabase] Initiating database")
-	dsn := GetDSNString()
+	dsn := configs.GetDSNString()
 
 	fmt.Println("[InitDatabase] Opening the database connection")
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
