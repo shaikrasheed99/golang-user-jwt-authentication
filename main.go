@@ -19,11 +19,12 @@ func main() {
 
 	us := services.NewUserService(ur)
 
+	ah := handlers.NewAuthHandler(us)
 	uc := handlers.NewUserHandler(us)
 
 	app := gin.Default()
 
-	routes.RegisterAuthRoutes(app, uc)
+	routes.RegisterAuthRoutes(app, ah)
 	routes.RegisterUserRoutes(app, uc)
 
 	app.Run()
