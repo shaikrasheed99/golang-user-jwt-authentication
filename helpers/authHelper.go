@@ -40,9 +40,15 @@ func GenerateToken(username string, role string) (string, string, error) {
 	}
 
 	refreshTokenClaims := &authClaims{
+		Username: accessTokenClaims.Username,
+		Role:     accessTokenClaims.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer: accessTokenClaims.Issuer,
 			ExpiresAt: &jwt.NumericDate{
 				Time: time.Now().Add(time.Minute * time.Duration(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES)),
+			},
+			IssuedAt: &jwt.NumericDate{
+				Time: time.Now(),
 			},
 		},
 	}
