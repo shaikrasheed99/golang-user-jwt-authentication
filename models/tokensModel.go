@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type AuthModel struct {
+type TokensModel struct {
 	ID           uint   `gorm:"autoIncrement"`
 	Username     string `gorm:"primaryKey"`
 	AccessToken  string
