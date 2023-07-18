@@ -10,6 +10,7 @@ import (
 
 type AuthRepository interface {
 	SaveTokens(string, string, string) error
+	FindTokensByUsername(string) (models.Tokens, error)
 }
 
 type authRepository struct {
@@ -41,4 +42,23 @@ func (ar *authRepository) SaveTokens(username string, accessToken string, refres
 
 	fmt.Println("[SaveTokensRepository] Tokens are saved")
 	return nil
+}
+
+func (ar *authRepository) FindTokensByUsername(username string) (models.Tokens, error) {
+	fmt.Println("[FindTokensByUsernameRepository] Hitting find tokens by username function in auth repository")
+
+	var tokens models.Tokens
+	res := ar.db.Where("username = ?", username).Find(&tokens)
+	if res.Error != nil {
+		fmt.Println("[FindTokensByUsernameRepository] Error while finding tokens by username")
+		return models.Tokens{}, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		fmt.Println("[FindTokensByUsernameRepository] Tokens are not found with username")
+		return models.Tokens{}, gorm.ErrRecordNotFound
+	}
+
+	fmt.Println("[FindTokensByUsernameRepository] Tokens are found")
+	return tokens, nil
 }

@@ -22,7 +22,7 @@ func main() {
 	as := services.NewAuthService(ar)
 
 	ah := handlers.NewAuthHandler(us, as)
-	uh := handlers.NewUserHandler(us)
+	uh := handlers.NewUserHandler(us, as)
 
 	app := gin.Default()
 

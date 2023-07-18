@@ -1,13 +1,18 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/models"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/repositories"
+	"gorm.io/gorm"
 )
 
 type AuthService interface {
 	SaveTokensByUsername(string, string, string) error
+	FindTokensByUsername(string) (models.Tokens, error)
 }
 
 type authService struct {
@@ -32,4 +37,23 @@ func (as *authService) SaveTokensByUsername(username string, accessToken string,
 
 	fmt.Println("[SaveTokensByUsernameService] Tokens are saved")
 	return nil
+}
+
+func (as *authService) FindTokensByUsername(username string) (models.Tokens, error) {
+	fmt.Println("[FindTokensByUsernameService] Hitting tokens by username function in auth service")
+
+	tokens, err := as.ar.FindTokensByUsername(username)
+	if err == gorm.ErrRecordNotFound {
+		errMessage := constants.TokensNotFoundErrorMessage
+		fmt.Println("[FindTokensByUsernameService]", errMessage)
+		return models.Tokens{}, errors.New(errMessage)
+	}
+
+	if err != nil {
+		fmt.Println("[FindTokensByUsernameService]", err.Error())
+		return models.Tokens{}, err
+	}
+
+	fmt.Println("[FindTokensByUsernameService] Returned tokens from repository")
+	return tokens, nil
 }
