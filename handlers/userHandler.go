@@ -34,7 +34,7 @@ func NewUserHandler(us services.UserService, as services.AuthService) UserHandle
 func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 	fmt.Println("[UserByUsernameHandler] Hitting user by username handler function in user handler")
 
-	username := c.Param("username")
+	username := c.Param(constants.Username)
 	_, err := strconv.Atoi(username)
 	if err == nil || username == "" {
 		errMessage := constants.InvalidUsernameErrorMessage
@@ -114,9 +114,9 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 }
 
 func (uh *userHandler) isUserProvidesValidToken(c *gin.Context) bool {
-	clientToken := c.Request.Header.Get("Authorization")
+	clientToken := c.Request.Header.Get(constants.Authorization)
 	tokenString := strings.Replace(clientToken, "Bearer ", "", 1)
-	username := c.GetString("username")
+	username := c.GetString(constants.Username)
 
 	tokens, err := uh.as.FindTokensByUsername(username)
 	if err != nil {
@@ -146,7 +146,7 @@ func isUserMatchesWith(c *gin.Context, inputUsername string) bool {
 		return false
 	}
 
-	username := c.GetString("username")
+	username := c.GetString(constants.Username)
 	if isEmpty(username) || !isEqual(username, inputUsername) {
 		return false
 	}
@@ -156,7 +156,7 @@ func isUserMatchesWith(c *gin.Context, inputUsername string) bool {
 
 func isAdmin(c *gin.Context) bool {
 	role := c.GetString("role")
-	if isEmpty(role) || !isEqual(role, "admin") {
+	if isEmpty(role) || !isEqual(role, constants.Admin) {
 		return false
 	}
 
@@ -165,7 +165,7 @@ func isAdmin(c *gin.Context) bool {
 
 func isUser(c *gin.Context) bool {
 	role := c.GetString("role")
-	if isEmpty(role) || !isEqual(role, "user") {
+	if isEmpty(role) || !isEqual(role, constants.User) {
 		return false
 	}
 

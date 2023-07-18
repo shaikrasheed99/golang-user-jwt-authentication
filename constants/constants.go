@@ -3,6 +3,10 @@ package constants
 const (
 	Success                            = "success"
 	Error                              = "error"
+	Username                           = "username"
+	Admin                              = "admin"
+	User                               = "user"
+	Authorization                      = "Authorization"
 	UserAlreadyExistsErrorMessage      = "user is already exists with username"
 	UserNotFoundErrorMessage           = "user is not found with username"
 	UserIsNotAuthorisedErrorMessage    = "user is not authorised to this api"

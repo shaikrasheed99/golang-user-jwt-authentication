@@ -13,7 +13,7 @@ import (
 func Authentication(c *gin.Context) {
 	fmt.Println("[AuthenticationMiddleware] Checking for authentication of user")
 
-	clientToken := c.Request.Header.Get("Authorization")
+	clientToken := c.Request.Header.Get(constants.Authorization)
 	tokenString := strings.Replace(clientToken, "Bearer ", "", 1)
 	if tokenString == "" {
 		errMessage := constants.NoAuthHeaderErrorMessage
