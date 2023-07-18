@@ -35,7 +35,7 @@ func (ar *authRepository) SaveTokens(username string, accessToken string, refres
 
 	res := ar.db.Save(&tokens)
 	if res.Error != nil {
-		fmt.Println("[SaveTokensRepository] Error while saving the tokens")
+		fmt.Println("[SaveTokensRepository]", res.Error.Error())
 		return res.Error
 	}
 

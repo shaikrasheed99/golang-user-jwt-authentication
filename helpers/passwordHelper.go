@@ -11,7 +11,7 @@ func GenerateHashedPassword(password string) (string, error) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		fmt.Println("[GenerateHashedPasswordHelper] Error while generating hashed password")
+		fmt.Println("[GenerateHashedPasswordHelper]", err.Error())
 		return "", err
 	}
 
@@ -23,7 +23,7 @@ func CheckPassword(hashedPass string, inputPass string) bool {
 	fmt.Println("[CheckPasswordHelper] Checking hashed password and input password")
 
 	if err := bcrypt.CompareHashAndPassword([]byte(hashedPass), []byte(inputPass)); err != nil {
-		fmt.Println("[CheckPasswordHelper] Passwords are not equal")
+		fmt.Println("[CheckPasswordHelper]", err.Error())
 		return false
 	}
 

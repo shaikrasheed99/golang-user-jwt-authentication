@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 )
 
 var (
@@ -40,7 +41,7 @@ func LoadConfigs() error {
 
 	jat, err := strconv.Atoi(os.Getenv("JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES"))
 	if err != nil {
-		errMessage := "invalid jwt access token expiration in minutes value"
+		errMessage := constants.InvalidTokenExpirationErrorMessage
 		fmt.Println("[LoadConfigs]", errMessage)
 		return errors.New(errMessage)
 	}
@@ -48,7 +49,7 @@ func LoadConfigs() error {
 
 	jrt, err := strconv.Atoi(os.Getenv("JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES"))
 	if err != nil {
-		errMessage := "invalid jwt access token expiration in minutes value"
+		errMessage := constants.InvalidTokenExpirationErrorMessage
 		fmt.Println("[LoadConfigs]", errMessage)
 		return errors.New(errMessage)
 	}

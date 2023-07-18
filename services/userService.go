@@ -77,7 +77,7 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 	}
 
 	if err != nil {
-		fmt.Println("[LoginService] Error while fetching user details with username")
+		fmt.Println("[LoginService]", err.Error())
 		return nil, err
 	}
 
@@ -104,7 +104,7 @@ func (us *userService) UserByUsername(username string) (*models.User, error) {
 	}
 
 	if err != nil {
-		fmt.Println("[UserByUsernameService] Error while fetching user details with username")
+		fmt.Println("[UserByUsernameService]", err.Error())
 		return nil, err
 	}
 
@@ -117,7 +117,7 @@ func (us *userService) GetAllUsers() ([]models.User, error) {
 
 	users, err := us.ur.FindAllUsers()
 	if err != nil {
-		fmt.Println("[GetAllUsersService] Error while fetching list of users")
+		fmt.Println("[GetAllUsersService]", err.Error())
 		return nil, err
 	}
 

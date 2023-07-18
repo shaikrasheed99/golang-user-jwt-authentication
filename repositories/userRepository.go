@@ -29,7 +29,7 @@ func (ur *userRepository) Save(user *models.User) (models.User, error) {
 
 	res := ur.db.Create(&user)
 	if res.Error != nil {
-		fmt.Println("[SaveRepository] Error while saving the user")
+		fmt.Println("[SaveRepository]", res.Error.Error())
 		return models.User{}, res.Error
 	}
 
@@ -43,7 +43,7 @@ func (ur *userRepository) FindUserByUsername(username string) (models.User, erro
 	var user models.User
 	res := ur.db.Where("username = ?", username).Find(&user)
 	if res.Error != nil {
-		fmt.Println("[FindUserByUsernamRepository] Error while finding user by username")
+		fmt.Println("[FindUserByUsernamRepository]", res.Error.Error())
 		return models.User{}, res.Error
 	}
 
@@ -62,7 +62,7 @@ func (ur *userRepository) FindAllUsers() ([]models.User, error) {
 	var users []models.User
 	res := ur.db.Find(&users)
 	if res.Error != nil {
-		fmt.Println("[FindAllUsersRepository] Error while finding list of users")
+		fmt.Println("[FindAllUsersRepository]", res.Error.Error())
 		return nil, res.Error
 	}
 
