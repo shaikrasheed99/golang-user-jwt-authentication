@@ -11,4 +11,6 @@ const (
 	InvalidTokenErrorMessage        = "invalid token"
 	ExpiredTokenErrorMessage        = "token has expired"
 	NoAuthHeaderErrorMessage        = "no authorization header provided"
+	TokensNotFoundErrorMessage      = "tokens are not found"
+	MaliciousTokenErrorMessage      = "malicious token has been passed"
 )

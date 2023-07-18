@@ -18,12 +18,14 @@ type AuthHandler interface {
 
 type authHandler struct {
 	us services.UserService
+	as services.AuthService
 }
 
-func NewAuthHandler(us services.UserService) AuthHandler {
+func NewAuthHandler(us services.UserService, as services.AuthService) AuthHandler {
 	fmt.Println("[NewAuthHandler] Initiating New Auth Handler")
 	return &authHandler{
 		us: us,
+		as: as,
 	}
 }
 
@@ -47,6 +49,14 @@ func (ah *authHandler) SignupHandler(c *gin.Context) {
 	}
 
 	accessToken, refreshToken, err := helpers.GenerateToken(savedUser.Username, savedUser.Role)
+	if err != nil {
+		fmt.Println("[SignupHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	err = ah.as.SaveTokensByUsername(savedUser.Username, accessToken, refreshToken)
 	if err != nil {
 		fmt.Println("[SignupHandler]", err.Error())
 		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
@@ -81,6 +91,14 @@ func (ah *authHandler) LoginHandler(c *gin.Context) {
 	}
 
 	accessToken, refreshToken, err := helpers.GenerateToken(user.Username, user.Role)
+	if err != nil {
+		fmt.Println("[LoginHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	err = ah.as.SaveTokensByUsername(user.Username, accessToken, refreshToken)
 	if err != nil {
 		fmt.Println("[LoginHandler]", err.Error())
 		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())

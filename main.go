@@ -16,16 +16,18 @@ func main() {
 	db := database.InitDatabase()
 
 	ur := repositories.NewUserRepository(db)
+	ar := repositories.NewAuthRepository(db)
 
 	us := services.NewUserService(ur)
+	as := services.NewAuthService(ar)
 
-	ah := handlers.NewAuthHandler(us)
-	uc := handlers.NewUserHandler(us)
+	ah := handlers.NewAuthHandler(us, as)
+	uh := handlers.NewUserHandler(us)
 
 	app := gin.Default()
 
 	routes.RegisterAuthRoutes(app, ah)
-	routes.RegisterUserRoutes(app, uc)
+	routes.RegisterUserRoutes(app, uh)
 
 	app.Run()
 }
