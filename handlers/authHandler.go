@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/services"
@@ -64,8 +66,27 @@ func (ah *authHandler) SignupHandler(c *gin.Context) {
 		return
 	}
 
-	savedUserRes := helpers.CreateAuthenticationResponse(savedUser, accessToken, refreshToken)
-	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully saved user details", savedUserRes)
+	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully saved user details", nil)
+
+	c.SetCookie(
+		constants.AccessTokenCookie,
+		accessToken,
+		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
+
+	c.SetCookie(
+		constants.RefreshTokenCookie,
+		refreshToken,
+		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
 
 	fmt.Println("[SignupHandler] Finished execution of signup handler")
 	c.JSON(http.StatusCreated, res)
@@ -106,8 +127,27 @@ func (ah *authHandler) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	userRes := helpers.CreateAuthenticationResponse(user, accessToken, refreshToken)
-	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged in", userRes)
+	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged in", nil)
+
+	c.SetCookie(
+		constants.AccessTokenCookie,
+		accessToken,
+		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
+
+	c.SetCookie(
+		constants.RefreshTokenCookie,
+		refreshToken,
+		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
 
 	fmt.Println("[LoginHandler] Finished execution of login handler")
 	c.JSON(http.StatusOK, res)

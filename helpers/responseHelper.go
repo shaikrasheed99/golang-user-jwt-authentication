@@ -42,13 +42,3 @@ func CreateUserResponse(user *models.User) responses.UserResponse {
 		Role:      user.Role,
 	}
 }
-
-func CreateAuthenticationResponse(user *models.User, accessToken, refreshToken string) responses.AuthenticationResponse {
-	fmt.Println("[CreateAuthenticationResponseHelper] Creating authentication response")
-
-	return responses.AuthenticationResponse{
-		Username:     user.Username,
-		Token:        accessToken,
-		RefreshToken: refreshToken,
-	}
-}
