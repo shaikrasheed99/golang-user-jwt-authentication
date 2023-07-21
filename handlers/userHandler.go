@@ -44,7 +44,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 		return
 	}
 
-	if !isUserMatchesWith(c, username) {
+	if !helpers.IsUserMatchesWith(c, username) {
 		errMessage := constants.UserIsNotAuthorisedErrorMessage
 		fmt.Println("[UserByUsernameHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
@@ -78,7 +78,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 func (uh *userHandler) GetAllUsers(c *gin.Context) {
 	fmt.Println("[GetAllUsersHandler] Hitting get all users handler function in user handler")
 
-	if !isAdmin(c) {
+	if !helpers.IsAdmin(c) {
 		errMessage := constants.UserIsNotAuthorisedErrorMessage
 		fmt.Println("[GetAllUsersHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
@@ -124,60 +124,11 @@ func (uh *userHandler) isUserProvidesValidToken(c *gin.Context) bool {
 		return false
 	}
 
-	if !areTokensEqual(tokenString, tokens.AccessToken) {
+	if !helpers.AreTokensEqual(tokenString, tokens.AccessToken) {
 		errMessage := constants.MaliciousTokenErrorMessage
 		fmt.Println("[UserByUsernameHandler]", errMessage)
 		return false
 	}
 
 	return true
-}
-
-func areTokensEqual(tokenOne string, tokenTwo string) bool {
-	return tokenOne == tokenTwo
-}
-
-func isUserMatchesWith(c *gin.Context, inputUsername string) bool {
-	if isAdmin(c) {
-		return true
-	}
-
-	if !isUser(c) {
-		return false
-	}
-
-	username := c.GetString(constants.Username)
-	if isEmpty(username) || !isEqual(username, inputUsername) {
-		return false
-	}
-
-	return true
-}
-
-func isAdmin(c *gin.Context) bool {
-	role := c.GetString("role")
-	if isEmpty(role) || !isEqual(role, constants.Admin) {
-		return false
-	}
-
-	return true
-}
-
-func isUser(c *gin.Context) bool {
-	role := c.GetString("role")
-	if isEmpty(role) || !isEqual(role, constants.User) {
-		return false
-	}
-
-	return true
-}
-
-func isEmpty(value string) bool {
-	return value == ""
-}
-
-func isEqual(valueOne string, valueTwo string) bool {
-	valueOne = strings.ToLower(valueOne)
-	valueTwo = strings.ToLower(valueTwo)
-	return valueOne == valueTwo
 }

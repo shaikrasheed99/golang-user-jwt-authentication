@@ -3,8 +3,10 @@ package helpers
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
@@ -99,4 +101,53 @@ func ValidateToken(signedToken string) (*authClaims, error) {
 
 	fmt.Println("[ValidateTokenHelper] Validated access token")
 	return claims, nil
+}
+
+func AreTokensEqual(tokenOne string, tokenTwo string) bool {
+	return tokenOne == tokenTwo
+}
+
+func IsUserMatchesWith(c *gin.Context, inputUsername string) bool {
+	if IsAdmin(c) {
+		return true
+	}
+
+	if !IsUser(c) {
+		return false
+	}
+
+	username := c.GetString(constants.Username)
+	if IsEmpty(username) || !IsEqual(username, inputUsername) {
+		return false
+	}
+
+	return true
+}
+
+func IsAdmin(c *gin.Context) bool {
+	role := c.GetString("role")
+	if IsEmpty(role) || !IsEqual(role, constants.Admin) {
+		return false
+	}
+
+	return true
+}
+
+func IsUser(c *gin.Context) bool {
+	role := c.GetString("role")
+	if IsEmpty(role) || !IsEqual(role, constants.User) {
+		return false
+	}
+
+	return true
+}
+
+func IsEmpty(value string) bool {
+	return value == ""
+}
+
+func IsEqual(valueOne string, valueTwo string) bool {
+	valueOne = strings.ToLower(valueOne)
+	valueTwo = strings.ToLower(valueTwo)
+	return valueOne == valueTwo
 }
