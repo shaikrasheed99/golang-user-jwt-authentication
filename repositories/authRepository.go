@@ -11,6 +11,7 @@ import (
 type AuthRepository interface {
 	SaveTokens(string, string, string) error
 	FindTokensByUsername(string) (models.Tokens, error)
+	DeleteTokensByUsername(string) error
 }
 
 type authRepository struct {
@@ -61,4 +62,17 @@ func (ar *authRepository) FindTokensByUsername(username string) (models.Tokens, 
 
 	fmt.Println("[FindTokensByUsernameRepository] Tokens are found")
 	return tokens, nil
+}
+
+func (ar *authRepository) DeleteTokensByUsername(username string) error {
+	fmt.Println("[DeleteTokensByUsername] Hitting delete function in auth repository")
+
+	res := ar.db.Where("username = ?", username).Delete(&models.Tokens{})
+	if res.Error != nil {
+		fmt.Println("[DeleteTokensByUsername]", res.Error.Error())
+		return res.Error
+	}
+
+	fmt.Println("[DeleteTokensByUsername] Tokens are deleted")
+	return nil
 }

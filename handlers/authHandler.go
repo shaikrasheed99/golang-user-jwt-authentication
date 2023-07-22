@@ -8,6 +8,7 @@ import (
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/middlewares"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/services"
 )
@@ -15,6 +16,7 @@ import (
 type AuthHandler interface {
 	SignupHandler(*gin.Context)
 	LoginHandler(*gin.Context)
+	LogoutHandler(*gin.Context)
 	Health(*gin.Context)
 }
 
@@ -150,6 +152,48 @@ func (ah *authHandler) LoginHandler(c *gin.Context) {
 	)
 
 	fmt.Println("[LoginHandler] Finished execution of login handler")
+	c.JSON(http.StatusOK, res)
+}
+
+func (ah *authHandler) LogoutHandler(c *gin.Context) {
+	fmt.Println("[LogoutHandler] Hitting logout handler function in auth handler")
+
+	middlewares.Authentication(c)
+	if c.IsAborted() {
+		return
+	}
+
+	var req *requests.LogoutRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println("[LogoutHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	if !helpers.IsUserMatchesWith(c, req.Username) {
+		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		fmt.Println("[LogoutHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
+		c.JSON(http.StatusUnauthorized, errRes)
+		return
+	}
+
+	err := ah.as.DeleteTokensByUsername(req.Username)
+	if err != nil {
+		fmt.Println("[LogoutHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged out", nil)
+
+	expirationTime := 24
+	c.SetCookie(constants.AccessTokenCookie, "", expirationTime, constants.HomePath, constants.LocalHost, true, true)
+	c.SetCookie(constants.RefreshTokenCookie, "", expirationTime, constants.HomePath, constants.LocalHost, true, true)
+
+	fmt.Println("[LogoutHandler] Finished execution of login handler")
 	c.JSON(http.StatusOK, res)
 }
 

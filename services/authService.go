@@ -13,6 +13,7 @@ import (
 type AuthService interface {
 	SaveTokensByUsername(string, string, string) error
 	FindTokensByUsername(string) (models.Tokens, error)
+	DeleteTokensByUsername(string) error
 }
 
 type authService struct {
@@ -56,4 +57,17 @@ func (as *authService) FindTokensByUsername(username string) (models.Tokens, err
 
 	fmt.Println("[FindTokensByUsernameService] Returned tokens from repository")
 	return tokens, nil
+}
+
+func (as *authService) DeleteTokensByUsername(username string) error {
+	fmt.Println("[DeleteTokensByUsername] Hitting delete tokens function in auth service")
+
+	err := as.ar.DeleteTokensByUsername(username)
+	if err != nil {
+		fmt.Println("[DeleteTokensByUsername]", err.Error())
+		return err
+	}
+
+	fmt.Println("[DeleteTokensByUsername] Tokens are deleted")
+	return nil
 }
