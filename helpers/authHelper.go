@@ -125,7 +125,7 @@ func IsUserMatchesWith(c *gin.Context, inputUsername string) bool {
 }
 
 func IsAdmin(c *gin.Context) bool {
-	role := c.GetString("role")
+	role := c.GetString(constants.Role)
 	if IsEmpty(role) || !IsEqual(role, constants.Admin) {
 		return false
 	}
@@ -134,7 +134,7 @@ func IsAdmin(c *gin.Context) bool {
 }
 
 func IsUser(c *gin.Context) bool {
-	role := c.GetString("role")
+	role := c.GetString(constants.Role)
 	if IsEmpty(role) || !IsEqual(role, constants.User) {
 		return false
 	}

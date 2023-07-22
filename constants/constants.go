@@ -4,6 +4,7 @@ const (
 	Success            = "success"
 	Error              = "error"
 	Username           = "username"
+	Role               = "role"
 	Admin              = "admin"
 	User               = "user"
 	Authorization      = "Authorization"
