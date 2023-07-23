@@ -53,7 +53,7 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 		Username:  userReq.Username,
 		Password:  hashedPass,
 		Email:     userReq.Email,
-		Role:      userReq.Role,
+		Role:      constants.User,
 	}
 
 	savedUser, err := us.ur.Save(newUser)

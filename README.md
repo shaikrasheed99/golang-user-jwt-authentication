@@ -50,7 +50,6 @@ curl --location --request POST 'http://localhost:8080/signup' \
     "username": "ironman123",
     "password": "ironman@123",
     "email": "ironman@gmail.com",
-    "role": "admin"
 }'
 ```
 
