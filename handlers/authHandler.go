@@ -18,6 +18,7 @@ type AuthHandler interface {
 	SignupHandler(*gin.Context)
 	LoginHandler(*gin.Context)
 	LogoutHandler(*gin.Context)
+	RefreshTokenHandler(*gin.Context)
 	Health(*gin.Context)
 }
 
@@ -206,6 +207,81 @@ func (ah *authHandler) LogoutHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+func (ah *authHandler) RefreshTokenHandler(c *gin.Context) {
+	fmt.Println("[RefreshTokenHandler] Hitting refresh token handler function in auth handler")
+
+	middlewares.Authentication(c)
+	if c.IsAborted() {
+		return
+	}
+
+	var req *requests.LogoutRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println("[RefreshTokenHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	if !helpers.IsUserMatchesWith(c, req.Username) {
+		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		fmt.Println("[RefreshTokenHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
+		c.JSON(http.StatusUnauthorized, errRes)
+		return
+	}
+
+	if !ah.isUserProvidesValidRefreshToken(c) {
+		errMessage := constants.MaliciousTokenErrorMessage
+		fmt.Println("[RefreshTokenHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
+		c.JSON(http.StatusUnauthorized, errRes)
+		return
+	}
+
+	role := c.GetString(constants.Role)
+	accessToken, refreshToken, err := helpers.GenerateToken(req.Username, role)
+	if err != nil {
+		fmt.Println("[RefreshTokenHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	err = ah.as.SaveTokensByUsername(req.Username, accessToken, refreshToken)
+	if err != nil {
+		fmt.Println("[RefreshTokenHandler]", err.Error())
+		errRes := helpers.CreateErrorResponse(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+
+	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully received access token", nil)
+
+	c.SetCookie(
+		constants.AccessTokenCookie,
+		accessToken,
+		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
+
+	c.SetCookie(
+		constants.RefreshTokenCookie,
+		refreshToken,
+		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
+
+	fmt.Println("[RefreshTokenHandler] Finished execution of refresh token handler")
+	c.JSON(http.StatusOK, res)
+}
+
 func (ah *authHandler) Health(c *gin.Context) {
 	fmt.Println("[HealthHandler] Hitting health function in auth handler")
 
@@ -221,13 +297,33 @@ func (ah *authHandler) isUserProvidesValidAccessToken(c *gin.Context) bool {
 
 	tokens, err := ah.as.FindTokensByUsername(username)
 	if err != nil {
-		fmt.Println("[isUserProvidesValidToken]", err.Error())
+		fmt.Println("[isUserProvidesValidAccessToken]", err.Error())
 		return false
 	}
 
 	if !helpers.AreTokensEqual(tokenString, tokens.AccessToken) {
 		errMessage := constants.MaliciousTokenErrorMessage
-		fmt.Println("[isUserProvidesValidToken]", errMessage)
+		fmt.Println("[isUserProvidesValidAccessToken]", errMessage)
+		return false
+	}
+
+	return true
+}
+
+func (ah *authHandler) isUserProvidesValidRefreshToken(c *gin.Context) bool {
+	clientToken := c.Request.Header.Get(constants.Authorization)
+	tokenString := strings.Replace(clientToken, "Bearer ", "", 1)
+	username := c.GetString(constants.Username)
+
+	tokens, err := ah.as.FindTokensByUsername(username)
+	if err != nil {
+		fmt.Println("[isUserProvidesValidRefreshToken]", err.Error())
+		return false
+	}
+
+	if !helpers.AreTokensEqual(tokenString, tokens.RefreshToken) {
+		errMessage := constants.MaliciousTokenErrorMessage
+		fmt.Println("[isUserProvidesValidRefreshToken]", errMessage)
 		return false
 	}
 

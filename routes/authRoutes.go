@@ -14,5 +14,6 @@ func RegisterAuthRoutes(engine *gin.Engine, ah handlers.AuthHandler) {
 	engine.POST(constants.SignupUserEndpoint, ah.SignupHandler)
 	engine.POST(constants.LoginUserEndpoint, ah.LoginHandler)
 	engine.POST(constants.LogoutUserEndpoint, ah.LogoutHandler)
+	engine.POST(constants.RefreshAccessTokenEndpoint, ah.RefreshTokenHandler)
 	engine.GET(constants.HealthEndpint, ah.Health)
 }
