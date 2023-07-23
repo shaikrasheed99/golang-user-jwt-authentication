@@ -52,7 +52,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 		return
 	}
 
-	if !uh.isUserProvidesValidToken(c) {
+	if !uh.isUserProvidesValidAccessToken(c) {
 		errMessage := constants.MaliciousTokenErrorMessage
 		fmt.Println("[UserByUsernameHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
@@ -86,7 +86,7 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 		return
 	}
 
-	if !uh.isUserProvidesValidToken(c) {
+	if !uh.isUserProvidesValidAccessToken(c) {
 		errMessage := constants.MaliciousTokenErrorMessage
 		fmt.Println("[GetAllUsersHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
@@ -113,20 +113,20 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (uh *userHandler) isUserProvidesValidToken(c *gin.Context) bool {
+func (uh *userHandler) isUserProvidesValidAccessToken(c *gin.Context) bool {
 	clientToken := c.Request.Header.Get(constants.Authorization)
 	tokenString := strings.Replace(clientToken, "Bearer ", "", 1)
 	username := c.GetString(constants.Username)
 
 	tokens, err := uh.as.FindTokensByUsername(username)
 	if err != nil {
-		fmt.Println("[UserByUsernameHandler]", err.Error())
+		fmt.Println("[isUserProvidesValidAccessToken]", err.Error())
 		return false
 	}
 
 	if !helpers.AreTokensEqual(tokenString, tokens.AccessToken) {
 		errMessage := constants.MaliciousTokenErrorMessage
-		fmt.Println("[UserByUsernameHandler]", errMessage)
+		fmt.Println("[isUserProvidesValidAccessToken]", errMessage)
 		return false
 	}
 

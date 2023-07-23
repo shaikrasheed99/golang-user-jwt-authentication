@@ -151,3 +151,25 @@ func IsEqual(valueOne string, valueTwo string) bool {
 	valueTwo = strings.ToLower(valueTwo)
 	return valueOne == valueTwo
 }
+
+func SetAccessAndRefreshTokenCookies(c *gin.Context, accessToken, refreshToken string) {
+	c.SetCookie(
+		constants.AccessTokenCookie,
+		accessToken,
+		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
+
+	c.SetCookie(
+		constants.RefreshTokenCookie,
+		refreshToken,
+		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
+		constants.HomePath,
+		constants.LocalHost,
+		true,
+		true,
+	)
+}

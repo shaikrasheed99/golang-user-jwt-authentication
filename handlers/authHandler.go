@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/middlewares"
@@ -72,25 +71,7 @@ func (ah *authHandler) SignupHandler(c *gin.Context) {
 
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully saved user details", nil)
 
-	c.SetCookie(
-		constants.AccessTokenCookie,
-		accessToken,
-		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
-		constants.HomePath,
-		constants.LocalHost,
-		true,
-		true,
-	)
-
-	c.SetCookie(
-		constants.RefreshTokenCookie,
-		refreshToken,
-		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
-		constants.HomePath,
-		constants.LocalHost,
-		true,
-		true,
-	)
+	helpers.SetAccessAndRefreshTokenCookies(c, accessToken, refreshToken)
 
 	fmt.Println("[SignupHandler] Finished execution of signup handler")
 	c.JSON(http.StatusCreated, res)
@@ -133,25 +114,7 @@ func (ah *authHandler) LoginHandler(c *gin.Context) {
 
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged in", nil)
 
-	c.SetCookie(
-		constants.AccessTokenCookie,
-		accessToken,
-		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
-		constants.HomePath,
-		constants.LocalHost,
-		true,
-		true,
-	)
-
-	c.SetCookie(
-		constants.RefreshTokenCookie,
-		refreshToken,
-		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
-		constants.HomePath,
-		constants.LocalHost,
-		true,
-		true,
-	)
+	helpers.SetAccessAndRefreshTokenCookies(c, accessToken, refreshToken)
 
 	fmt.Println("[LoginHandler] Finished execution of login handler")
 	c.JSON(http.StatusOK, res)
@@ -199,9 +162,7 @@ func (ah *authHandler) LogoutHandler(c *gin.Context) {
 
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully logged out", nil)
 
-	expirationTime := 24
-	c.SetCookie(constants.AccessTokenCookie, "", expirationTime, constants.HomePath, constants.LocalHost, true, true)
-	c.SetCookie(constants.RefreshTokenCookie, "", expirationTime, constants.HomePath, constants.LocalHost, true, true)
+	helpers.SetAccessAndRefreshTokenCookies(c, "", "")
 
 	fmt.Println("[LogoutHandler] Finished execution of login handler")
 	c.JSON(http.StatusOK, res)
@@ -258,25 +219,7 @@ func (ah *authHandler) RefreshTokenHandler(c *gin.Context) {
 
 	res := helpers.CreateSuccessResponse(http.StatusOK, "successfully received access token", nil)
 
-	c.SetCookie(
-		constants.AccessTokenCookie,
-		accessToken,
-		int(configs.JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES),
-		constants.HomePath,
-		constants.LocalHost,
-		true,
-		true,
-	)
-
-	c.SetCookie(
-		constants.RefreshTokenCookie,
-		refreshToken,
-		int(configs.JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES),
-		constants.HomePath,
-		constants.LocalHost,
-		true,
-		true,
-	)
+	helpers.SetAccessAndRefreshTokenCookies(c, accessToken, refreshToken)
 
 	fmt.Println("[RefreshTokenHandler] Finished execution of refresh token handler")
 	c.JSON(http.StatusOK, res)
