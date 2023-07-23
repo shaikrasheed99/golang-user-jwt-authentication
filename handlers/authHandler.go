@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/configs"
@@ -179,6 +180,14 @@ func (ah *authHandler) LogoutHandler(c *gin.Context) {
 		return
 	}
 
+	if !ah.isUserProvidesValidAccessToken(c) {
+		errMessage := constants.MaliciousTokenErrorMessage
+		fmt.Println("[LogoutHandler]", errMessage)
+		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
+		c.JSON(http.StatusUnauthorized, errRes)
+		return
+	}
+
 	err := ah.as.DeleteTokensByUsername(req.Username)
 	if err != nil {
 		fmt.Println("[LogoutHandler]", err.Error())
@@ -203,4 +212,24 @@ func (ah *authHandler) Health(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "UP!",
 	})
+}
+
+func (ah *authHandler) isUserProvidesValidAccessToken(c *gin.Context) bool {
+	clientToken := c.Request.Header.Get(constants.Authorization)
+	tokenString := strings.Replace(clientToken, "Bearer ", "", 1)
+	username := c.GetString(constants.Username)
+
+	tokens, err := ah.as.FindTokensByUsername(username)
+	if err != nil {
+		fmt.Println("[isUserProvidesValidToken]", err.Error())
+		return false
+	}
+
+	if !helpers.AreTokensEqual(tokenString, tokens.AccessToken) {
+		errMessage := constants.MaliciousTokenErrorMessage
+		fmt.Println("[isUserProvidesValidToken]", errMessage)
+		return false
+	}
+
+	return true
 }
