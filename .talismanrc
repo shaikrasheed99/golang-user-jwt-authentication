@@ -13,4 +13,6 @@ fileignoreconfig:
     checksum: 8daa5cf7ce7d177e212b05a30f34deca2be64d4a7b9bae188bb2372ee412eee9
   - filename: constants/constants.go
     checksum: 75b27f386e6a87e274dcfb0828a97e6ee5ca37b40ae80fc6bdd0fcc59a1b0518
+  - filename: README.md
+    checksum: 9f661a93b8bade993ff1353f94aa96c810996f4a3b00d96a837f4fbf93580611
 version: ""
