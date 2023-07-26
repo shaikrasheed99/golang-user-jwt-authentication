@@ -1,6 +1,6 @@
 fileignoreconfig:
   - filename: go.sum
-    checksum: a68062a618f6649348f1450e7f92efd7d0c1188690a96205c4a7e595b151147e
+    checksum: b04f4106de57f3f21ac1ad45eb976e440eb3b36c0c3a1e0c013970c01e9d057d
   - filename: configs/config.go
     checksum: f9eea093839bb084b2eaa42fe7fc4b271e1c939d542219f80bf0346498356c0c
   - filename: requests/signupRequest.go
@@ -15,4 +15,6 @@ fileignoreconfig:
     checksum: 75b27f386e6a87e274dcfb0828a97e6ee5ca37b40ae80fc6bdd0fcc59a1b0518
   - filename: README.md
     checksum: 9f661a93b8bade993ff1353f94aa96c810996f4a3b00d96a837f4fbf93580611
+  - filename: services/userService_test.go
+    checksum: 0695a76b9d56e7daeceaa8bea4d474195300093fb648e75d73bed4862b09038d
 version: ""
