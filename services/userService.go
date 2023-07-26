@@ -42,7 +42,7 @@ func (us *userService) Save(userReq *requests.SignupRequest) (*models.User, erro
 	_, err = us.ur.FindUserByUsername(userReq.Username)
 
 	if err != gorm.ErrRecordNotFound {
-		errMessage := constants.UserAlreadyExistsErrorMessage
+		errMessage := constants.ErrUserAlreadyExists
 		fmt.Println("[SaveService]", errMessage)
 		return nil, errors.New(errMessage)
 	}
@@ -71,7 +71,7 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 
 	user, err := us.ur.FindUserByUsername(userReq.Username)
 	if err == gorm.ErrRecordNotFound {
-		errMessage := constants.UserNotFoundErrorMessage
+		errMessage := constants.ErrUserNotFound
 		fmt.Println("[LoginService]", errMessage)
 		return nil, errors.New(errMessage)
 	}
@@ -84,7 +84,7 @@ func (us *userService) Login(userReq *requests.LoginRequest) (*models.User, erro
 	isValidPassword := helpers.CheckPassword(user.Password, userReq.Password)
 
 	if !isValidPassword {
-		errMessage := constants.WrongPasswordErrorMessage
+		errMessage := constants.ErrWrongPassword
 		fmt.Println("[LoginService]", errMessage)
 		return nil, errors.New(errMessage)
 	}
@@ -98,7 +98,7 @@ func (us *userService) UserByUsername(username string) (*models.User, error) {
 
 	user, err := us.ur.FindUserByUsername(username)
 	if err == gorm.ErrRecordNotFound {
-		errMessage := constants.UserNotFoundErrorMessage
+		errMessage := constants.ErrUserNotFound
 		fmt.Println("[UserByUsernameService]", errMessage)
 		return nil, errors.New(errMessage)
 	}

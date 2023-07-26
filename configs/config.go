@@ -41,7 +41,7 @@ func LoadConfigs() error {
 
 	jat, err := strconv.Atoi(os.Getenv("JWT_ACCESS_TOKEN_EXPIRATION_IN_MINUTES"))
 	if err != nil {
-		errMessage := constants.InvalidTokenExpirationErrorMessage
+		errMessage := constants.ErrInvalidTokenExpiration
 		fmt.Println("[LoadConfigs]", errMessage)
 		return errors.New(errMessage)
 	}
@@ -49,7 +49,7 @@ func LoadConfigs() error {
 
 	jrt, err := strconv.Atoi(os.Getenv("JWT_REFRESH_TOKEN_EXPIRATION_IN_MINUTES"))
 	if err != nil {
-		errMessage := constants.InvalidTokenExpirationErrorMessage
+		errMessage := constants.ErrInvalidTokenExpiration
 		fmt.Println("[LoadConfigs]", errMessage)
 		return errors.New(errMessage)
 	}

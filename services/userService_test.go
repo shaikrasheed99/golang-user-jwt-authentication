@@ -55,7 +55,7 @@ func TestUserService_Save(t *testing.T) {
 		_, err := userService.Save(signupRequest)
 
 		assert.Error(t, err)
-		assert.Equal(t, constants.UserAlreadyExistsErrorMessage, err.Error())
+		assert.Equal(t, constants.ErrUserAlreadyExists, err.Error())
 		mockUserRepo.AssertExpectations(t)
 	})
 
@@ -106,7 +106,7 @@ func TestUserService_Login(t *testing.T) {
 		_, err := userService.Login(loginRequest)
 
 		assert.Error(t, err)
-		assert.Equal(t, constants.UserNotFoundErrorMessage, err.Error())
+		assert.Equal(t, constants.ErrUserNotFound, err.Error())
 		mockUserRepo.AssertExpectations(t)
 	})
 
@@ -119,7 +119,7 @@ func TestUserService_Login(t *testing.T) {
 		_, err := userService.Login(loginRequest)
 
 		assert.Error(t, err)
-		assert.Equal(t, constants.WrongPasswordErrorMessage, err.Error())
+		assert.Equal(t, constants.ErrWrongPassword, err.Error())
 		mockUserRepo.AssertExpectations(t)
 	})
 
@@ -165,7 +165,7 @@ func TestUserService_UserByUsername(t *testing.T) {
 		_, err := userService.UserByUsername(userMock.Username)
 
 		assert.Error(t, err)
-		assert.Equal(t, constants.UserNotFoundErrorMessage, err.Error())
+		assert.Equal(t, constants.ErrUserNotFound, err.Error())
 		mockUserRepo.AssertExpectations(t)
 	})
 

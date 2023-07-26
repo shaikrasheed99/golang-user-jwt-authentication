@@ -137,7 +137,7 @@ func (ah *authHandler) LogoutHandler(c *gin.Context) {
 	}
 
 	if !helpers.IsUserMatchesWith(c, req.Username) {
-		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		errMessage := constants.ErrUserIsNotAuthorised
 		fmt.Println("[LogoutHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -145,7 +145,7 @@ func (ah *authHandler) LogoutHandler(c *gin.Context) {
 	}
 
 	if !ah.isUserProvidesValidAccessToken(c) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[LogoutHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -185,7 +185,7 @@ func (ah *authHandler) RefreshTokenHandler(c *gin.Context) {
 	}
 
 	if !helpers.IsUserMatchesWith(c, req.Username) {
-		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		errMessage := constants.ErrUserIsNotAuthorised
 		fmt.Println("[RefreshTokenHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -193,7 +193,7 @@ func (ah *authHandler) RefreshTokenHandler(c *gin.Context) {
 	}
 
 	if !ah.isUserProvidesValidRefreshToken(c) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[RefreshTokenHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -245,7 +245,7 @@ func (ah *authHandler) isUserProvidesValidAccessToken(c *gin.Context) bool {
 	}
 
 	if !helpers.AreTokensEqual(tokenString, tokens.AccessToken) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[isUserProvidesValidAccessToken]", errMessage)
 		return false
 	}
@@ -265,7 +265,7 @@ func (ah *authHandler) isUserProvidesValidRefreshToken(c *gin.Context) bool {
 	}
 
 	if !helpers.AreTokensEqual(tokenString, tokens.RefreshToken) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[isUserProvidesValidRefreshToken]", errMessage)
 		return false
 	}

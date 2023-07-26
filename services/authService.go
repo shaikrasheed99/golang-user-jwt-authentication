@@ -45,7 +45,7 @@ func (as *authService) FindTokensByUsername(username string) (models.Tokens, err
 
 	tokens, err := as.ar.FindTokensByUsername(username)
 	if err == gorm.ErrRecordNotFound {
-		errMessage := constants.TokensNotFoundErrorMessage
+		errMessage := constants.ErrTokensNotFound
 		fmt.Println("[FindTokensByUsernameService]", errMessage)
 		return models.Tokens{}, errors.New(errMessage)
 	}

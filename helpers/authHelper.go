@@ -88,13 +88,13 @@ func ValidateToken(signedToken string) (*authClaims, error) {
 
 	claims, ok := token.Claims.(*authClaims)
 	if !ok {
-		errMessage := constants.InvalidTokenErrorMessage
+		errMessage := constants.ErrInvalidToken
 		fmt.Println("[ValidateTokenHelper]", errMessage)
 		return nil, errors.New(errMessage)
 	}
 
 	if claims.ExpiresAt.Time.Before(time.Now()) {
-		errMessage := constants.ExpiredTokenErrorMessage
+		errMessage := constants.ErrExpiredToken
 		fmt.Println("[ValidateTokenHelper]", errMessage)
 		return nil, errors.New(errMessage)
 	}

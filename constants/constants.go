@@ -15,15 +15,15 @@ const (
 )
 
 const (
-	UserAlreadyExistsErrorMessage      = "user is already exists with username"
-	UserNotFoundErrorMessage           = "user is not found with username"
-	UserIsNotAuthorisedErrorMessage    = "user is not authorised to this api"
-	InvalidUsernameErrorMessage        = "invalid username"
-	WrongPasswordErrorMessage          = "password is wrong"
-	InvalidTokenErrorMessage           = "invalid token"
-	ExpiredTokenErrorMessage           = "token has expired"
-	NoAuthHeaderErrorMessage           = "no authorization header provided"
-	TokensNotFoundErrorMessage         = "tokens are not found"
-	MaliciousTokenErrorMessage         = "malicious token has been passed"
-	InvalidTokenExpirationErrorMessage = "invalid jwt access token expiration in minutes value"
+	ErrUserAlreadyExists      = "user is already exists with username"
+	ErrUserNotFound           = "user is not found with username"
+	ErrUserIsNotAuthorised    = "user is not authorised to this api"
+	ErrInvalidUsername        = "invalid username"
+	ErrWrongPassword          = "password is wrong"
+	ErrInvalidToken           = "invalid token"
+	ErrExpiredToken           = "token has expired"
+	ErrNoAuthHeader           = "no authorization header provided"
+	ErrTokensNotFound         = "tokens are not found"
+	ErrMaliciousToken         = "malicious token has been passed"
+	ErrInvalidTokenExpiration = "invalid jwt access token expiration in minutes value"
 )

@@ -37,7 +37,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 	username := c.Param(constants.Username)
 	_, err := strconv.Atoi(username)
 	if err == nil || username == "" {
-		errMessage := constants.InvalidUsernameErrorMessage
+		errMessage := constants.ErrInvalidUsername
 		fmt.Println("[UserByUsernameHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, errMessage)
 		c.JSON(http.StatusBadRequest, errRes)
@@ -45,7 +45,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 	}
 
 	if !helpers.IsUserMatchesWith(c, username) {
-		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		errMessage := constants.ErrUserIsNotAuthorised
 		fmt.Println("[UserByUsernameHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -53,7 +53,7 @@ func (uh *userHandler) UserByUsernameHandler(c *gin.Context) {
 	}
 
 	if !uh.isUserProvidesValidAccessToken(c) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[UserByUsernameHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -79,7 +79,7 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 	fmt.Println("[GetAllUsersHandler] Hitting get all users handler function in user handler")
 
 	if !helpers.IsAdmin(c) {
-		errMessage := constants.UserIsNotAuthorisedErrorMessage
+		errMessage := constants.ErrUserIsNotAuthorised
 		fmt.Println("[GetAllUsersHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -87,7 +87,7 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 	}
 
 	if !uh.isUserProvidesValidAccessToken(c) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[GetAllUsersHandler]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusUnauthorized, errMessage)
 		c.JSON(http.StatusUnauthorized, errRes)
@@ -125,7 +125,7 @@ func (uh *userHandler) isUserProvidesValidAccessToken(c *gin.Context) bool {
 	}
 
 	if !helpers.AreTokensEqual(tokenString, tokens.AccessToken) {
-		errMessage := constants.MaliciousTokenErrorMessage
+		errMessage := constants.ErrMaliciousToken
 		fmt.Println("[isUserProvidesValidAccessToken]", errMessage)
 		return false
 	}

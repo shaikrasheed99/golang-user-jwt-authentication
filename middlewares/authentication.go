@@ -16,7 +16,7 @@ func Authentication(c *gin.Context) {
 	clientToken := c.Request.Header.Get(constants.Authorization)
 	tokenString := strings.Replace(clientToken, "Bearer ", "", 1)
 	if tokenString == "" {
-		errMessage := constants.NoAuthHeaderErrorMessage
+		errMessage := constants.ErrNoAuthHeader
 		fmt.Println("[AuthenticationMiddleware]", errMessage)
 		errRes := helpers.CreateErrorResponse(http.StatusBadRequest, errMessage)
 		c.JSON(http.StatusBadRequest, errRes)
