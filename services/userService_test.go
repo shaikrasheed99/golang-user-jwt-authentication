@@ -169,12 +169,48 @@ func TestUserService_UserByUsername(t *testing.T) {
 		mockUserRepo.AssertExpectations(t)
 	})
 
-	t.Run("should be able empty user when there is error from database", func(t *testing.T) {
+	t.Run("should be able tp get empty user when there is error from database", func(t *testing.T) {
 		mockUserRepo := new(mocks.UserRepository)
 		mockUserRepo.On("FindUserByUsername", userMock.Username).Return(emptyUserMock, dbError)
 		userService := NewUserService(mockUserRepo)
 
 		_, err := userService.UserByUsername(userMock.Username)
+
+		assert.Error(t, err)
+		assert.Equal(t, dbError.Error(), err.Error())
+		mockUserRepo.AssertExpectations(t)
+	})
+}
+
+func TestUserService_GetAllUsers(t *testing.T) {
+	emptyUsersMock := []models.User{}
+	dbError := errors.New("db error")
+	usersMock := []models.User{
+		{
+			Username: "test_username",
+			Email:    "test_email",
+		},
+	}
+
+	t.Run("should be able to get all users list", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindAllUsers").Return(usersMock, nil)
+		userService := NewUserService(mockUserRepo)
+
+		users, err := userService.GetAllUsers()
+
+		assert.NoError(t, err)
+		assert.Equal(t, users[0].Username, usersMock[0].Username)
+		assert.Equal(t, users[0].Email, usersMock[0].Email)
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("should be able to get empty users list when there is error from database", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindAllUsers").Return(emptyUsersMock, dbError)
+		userService := NewUserService(mockUserRepo)
+
+		_, err := userService.GetAllUsers()
 
 		assert.Error(t, err)
 		assert.Equal(t, dbError.Error(), err.Error())
