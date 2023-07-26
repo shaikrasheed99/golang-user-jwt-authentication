@@ -135,3 +135,49 @@ func TestUserService_Login(t *testing.T) {
 		mockUserRepo.AssertExpectations(t)
 	})
 }
+
+func TestUserService_UserByUsername(t *testing.T) {
+	emptyUserMock := models.User{}
+	dbError := errors.New("db error")
+	userMock := models.User{
+		Username: "test_username",
+		Email:    "test_email",
+	}
+
+	t.Run("should be able to get user details by username", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", userMock.Username).Return(userMock, nil)
+		userService := NewUserService(mockUserRepo)
+
+		user, err := userService.UserByUsername(userMock.Username)
+
+		assert.NoError(t, err)
+		assert.Equal(t, user.Username, userMock.Username)
+		assert.Equal(t, user.Email, userMock.Email)
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("should be able to get empty user when user is not exists", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", userMock.Username).Return(emptyUserMock, gorm.ErrRecordNotFound)
+		userService := NewUserService(mockUserRepo)
+
+		_, err := userService.UserByUsername(userMock.Username)
+
+		assert.Error(t, err)
+		assert.Equal(t, constants.UserNotFoundErrorMessage, err.Error())
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("should be able empty user when there is error from database", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", userMock.Username).Return(emptyUserMock, dbError)
+		userService := NewUserService(mockUserRepo)
+
+		_, err := userService.UserByUsername(userMock.Username)
+
+		assert.Error(t, err)
+		assert.Equal(t, dbError.Error(), err.Error())
+		mockUserRepo.AssertExpectations(t)
+	})
+}
