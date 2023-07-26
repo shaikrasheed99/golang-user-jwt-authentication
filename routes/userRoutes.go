@@ -9,7 +9,7 @@ import (
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/middlewares"
 )
 
-func RegisterUserRoutes(engine *gin.Engine, uc handlers.UserHandler) {
+func RegisterUserRoutes(engine *gin.Engine, uc handlers.IUserHandler) {
 	fmt.Println("[RegisterUserRoutes] Registering user routes of the app")
 
 	engine.Use(middlewares.Authentication)

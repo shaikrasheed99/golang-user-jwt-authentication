@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepository interface {
+type IUserRepository interface {
 	Save(*models.User) (models.User, error)
 	FindUserByUsername(username string) (models.User, error)
 	FindAllUsers() ([]models.User, error)
@@ -17,7 +17,7 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
+func NewUserRepository(db *gorm.DB) IUserRepository {
 	fmt.Println("[NewUserRepository] Initiating New User Repository")
 	return &userRepository{
 		db: db,

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type AuthRepository interface {
+type IAuthRepository interface {
 	SaveTokens(string, string, string) error
 	FindTokensByUsername(string) (models.Tokens, error)
 	DeleteTokensByUsername(string) error
@@ -18,7 +18,7 @@ type authRepository struct {
 	db *gorm.DB
 }
 
-func NewAuthRepository(db *gorm.DB) AuthRepository {
+func NewAuthRepository(db *gorm.DB) IAuthRepository {
 	fmt.Println("[NewAuthRepository] Initiating New Auth Repository")
 	return &authRepository{
 		db: db,

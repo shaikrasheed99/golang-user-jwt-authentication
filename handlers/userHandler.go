@@ -13,17 +13,17 @@ import (
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/services"
 )
 
-type UserHandler interface {
+type IUserHandler interface {
 	UserByUsernameHandler(*gin.Context)
 	GetAllUsers(*gin.Context)
 }
 
 type userHandler struct {
-	us services.UserService
-	as services.AuthService
+	us services.IUserService
+	as services.IAuthService
 }
 
-func NewUserHandler(us services.UserService, as services.AuthService) UserHandler {
+func NewUserHandler(us services.IUserService, as services.IAuthService) IUserHandler {
 	fmt.Println("[NewUserHandler] Initiating New User Handler")
 	return &userHandler{
 		us: us,

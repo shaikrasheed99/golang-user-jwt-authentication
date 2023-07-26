@@ -10,17 +10,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type AuthService interface {
+type IAuthService interface {
 	SaveTokensByUsername(string, string, string) error
 	FindTokensByUsername(string) (models.Tokens, error)
 	DeleteTokensByUsername(string) error
 }
 
 type authService struct {
-	ar repositories.AuthRepository
+	ar repositories.IAuthRepository
 }
 
-func NewAuthService(ar repositories.AuthRepository) AuthService {
+func NewAuthService(ar repositories.IAuthRepository) IAuthService {
 	fmt.Println("[NewAuthService] Initiating New Auth Service")
 	return &authService{
 		ar: ar,

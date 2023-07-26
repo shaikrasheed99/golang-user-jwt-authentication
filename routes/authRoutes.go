@@ -8,7 +8,7 @@ import (
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/handlers"
 )
 
-func RegisterAuthRoutes(engine *gin.Engine, ah handlers.AuthHandler) {
+func RegisterAuthRoutes(engine *gin.Engine, ah handlers.IAuthHandler) {
 	fmt.Println("[RegisterAuthRoutes] Registering auth routes of the app")
 
 	engine.POST(constants.SignupUserEndpoint, ah.SignupHandler)

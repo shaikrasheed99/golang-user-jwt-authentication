@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserService interface {
+type IUserService interface {
 	Save(*requests.SignupRequest) (*models.User, error)
 	Login(*requests.LoginRequest) (*models.User, error)
 	UserByUsername(username string) (*models.User, error)
@@ -20,10 +20,10 @@ type UserService interface {
 }
 
 type userService struct {
-	ur repositories.UserRepository
+	ur repositories.IUserRepository
 }
 
-func NewUserService(ur repositories.UserRepository) UserService {
+func NewUserService(ur repositories.IUserRepository) IUserService {
 	fmt.Println("[NewUserService] Initiating New User Service")
 	return &userService{
 		ur: ur,
