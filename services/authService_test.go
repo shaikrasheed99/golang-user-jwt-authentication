@@ -93,3 +93,31 @@ func TestAuthService_FindTokensByUsername(t *testing.T) {
 		mockAuthRepo.AssertExpectations(t)
 	})
 }
+
+func TestAuthService_DeleteTokensByUsername(t *testing.T) {
+	username := "test_username"
+	dbError := errors.New("db error")
+
+	t.Run("should be able to delete tokens by username", func(t *testing.T) {
+		mockAuthRepo := new(mocks.AuthRepository)
+		mockAuthRepo.On("DeleteTokensByUsername", username).Return(nil)
+		authService := NewAuthService(mockAuthRepo)
+
+		err := authService.DeleteTokensByUsername(username)
+
+		assert.NoError(t, err)
+		mockAuthRepo.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to delete tokens when there is error from database", func(t *testing.T) {
+		mockAuthRepo := new(mocks.AuthRepository)
+		mockAuthRepo.On("DeleteTokensByUsername", username).Return(dbError)
+		authService := NewAuthService(mockAuthRepo)
+
+		err := authService.DeleteTokensByUsername(username)
+
+		assert.Error(t, err)
+		assert.Equal(t, dbError.Error(), err.Error())
+		mockAuthRepo.AssertExpectations(t)
+	})
+}

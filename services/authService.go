@@ -60,14 +60,14 @@ func (as *authService) FindTokensByUsername(username string) (models.Tokens, err
 }
 
 func (as *authService) DeleteTokensByUsername(username string) error {
-	fmt.Println("[DeleteTokensByUsername] Hitting delete tokens function in auth service")
+	fmt.Println("[DeleteTokensByUsernameService] Hitting delete tokens function in auth service")
 
 	err := as.ar.DeleteTokensByUsername(username)
 	if err != nil {
-		fmt.Println("[DeleteTokensByUsername]", err.Error())
+		fmt.Println("[DeleteTokensByUsernameService]", err.Error())
 		return err
 	}
 
-	fmt.Println("[DeleteTokensByUsername] Tokens are deleted")
+	fmt.Println("[DeleteTokensByUsernameService] Tokens are deleted")
 	return nil
 }
