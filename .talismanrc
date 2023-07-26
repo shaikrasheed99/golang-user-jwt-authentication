@@ -16,5 +16,5 @@ fileignoreconfig:
   - filename: README.md
     checksum: 9f661a93b8bade993ff1353f94aa96c810996f4a3b00d96a837f4fbf93580611
   - filename: services/userService_test.go
-    checksum: 0695a76b9d56e7daeceaa8bea4d474195300093fb648e75d73bed4862b09038d
+    checksum: 0a33b7d59b18068b08834b502de2331cfdf1d2345d01ac30544ab0cd265e332e
 version: ""

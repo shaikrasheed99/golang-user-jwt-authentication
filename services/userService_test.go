@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/constants"
+	"github.com/shaikrasheed99/golang-user-jwt-authentication/helpers"
 	mocks "github.com/shaikrasheed99/golang-user-jwt-authentication/mocks/repositories"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/models"
 	"github.com/shaikrasheed99/golang-user-jwt-authentication/requests"
@@ -65,6 +66,69 @@ func TestUserService_Save(t *testing.T) {
 		userService := NewUserService(mockUserRepo)
 
 		_, err := userService.Save(signupRequest)
+
+		assert.Error(t, err)
+		assert.Equal(t, dbError.Error(), err.Error())
+		mockUserRepo.AssertExpectations(t)
+	})
+}
+
+func TestUserService_Login(t *testing.T) {
+	emptyUserMock := models.User{}
+	dbError := errors.New("db error")
+	loginRequest := &requests.LoginRequest{
+		Username: "test_username",
+		Password: "test_password",
+	}
+	hashedPassword, _ := helpers.GenerateHashedPassword(loginRequest.Password)
+	userMock := models.User{
+		Username: loginRequest.Username,
+		Password: hashedPassword,
+	}
+
+	t.Run("should be able to login with valid user details", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", loginRequest.Username).Return(userMock, nil)
+		userService := NewUserService(mockUserRepo)
+
+		user, err := userService.Login(loginRequest)
+
+		assert.NoError(t, err)
+		assert.Equal(t, user.FirstName, userMock.FirstName)
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to login when the user is not exists", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", loginRequest.Username).Return(emptyUserMock, gorm.ErrRecordNotFound)
+		userService := NewUserService(mockUserRepo)
+
+		_, err := userService.Login(loginRequest)
+
+		assert.Error(t, err)
+		assert.Equal(t, constants.UserNotFoundErrorMessage, err.Error())
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to login when the user provides incorrect password", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", loginRequest.Username).Return(userMock, nil)
+		userService := NewUserService(mockUserRepo)
+		loginRequest.Password = "abc"
+
+		_, err := userService.Login(loginRequest)
+
+		assert.Error(t, err)
+		assert.Equal(t, constants.WrongPasswordErrorMessage, err.Error())
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to login when there is a error from database", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("FindUserByUsername", loginRequest.Username).Return(emptyUserMock, dbError)
+		userService := NewUserService(mockUserRepo)
+
+		_, err := userService.Login(loginRequest)
 
 		assert.Error(t, err)
 		assert.Equal(t, dbError.Error(), err.Error())
