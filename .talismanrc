@@ -18,5 +18,5 @@ fileignoreconfig:
   - filename: services/userService_test.go
     checksum: 0a33b7d59b18068b08834b502de2331cfdf1d2345d01ac30544ab0cd265e332e
   - filename: handlers/authHandler_test.go
-    checksum: 453b1fcce9c5b0e26e40b43dd7e663a3ea9f54a52bbc669d46796340a83b4f2a
+    checksum: f5316497149e9912225ff9ee24bae463b746e552edd3830710a5d9371ce970e0
 version: ""

@@ -150,3 +150,130 @@ func TestAuthHandler_SignupHandler(t *testing.T) {
 		mockUserService.AssertExpectations(t)
 	})
 }
+
+func TestAuthHandler_LoginHandler(t *testing.T) {
+	userServiceError := errors.New("error from user service")
+	authServiceError := errors.New("error from auth service")
+	userMock := &models.User{
+		ID:        1,
+		FirstName: "test_first_name",
+		LastName:  "test_last_name",
+		Username:  "test_username",
+		Password:  "test_password",
+		Role:      "test_role",
+		Email:     "test_email@gmail.com",
+	}
+	loginRequest := &requests.LoginRequest{
+		Username: userMock.Username,
+		Password: userMock.Password,
+	}
+
+	t.Run("should be able to login", func(t *testing.T) {
+		mockUserService := new(mocks.UserService)
+		mockUserService.On("Login", loginRequest).Return(userMock, nil)
+		mockAuthService := new(mocks.AuthService)
+		mockAuthService.On("SaveTokensByUsername", userMock.Username, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
+
+		at, rt, _ := helpers.GenerateToken(userMock.Username, userMock.Role)
+
+		ah := NewAuthHandler(mockUserService, mockAuthService)
+		router := gin.Default()
+		router.POST(constants.LoginUserEndpoint, ah.LoginHandler)
+
+		res := httptest.NewRecorder()
+		body, _ := json.Marshal(loginRequest)
+		req, _ := http.NewRequest("POST", constants.LoginUserEndpoint, bytes.NewBuffer(body))
+		router.ServeHTTP(res, req)
+
+		var resBody responses.SuccessResponse
+		_ = json.Unmarshal(res.Body.Bytes(), &resBody)
+
+		assert.Equal(t, constants.Success, resBody.Status)
+		assert.Equal(t, http.StatusText(http.StatusOK), resBody.Code)
+		assert.Equal(t, "successfully logged in", resBody.Message)
+		assert.Equal(t, nil, resBody.Data)
+		assert.Equal(t, constants.AccessTokenCookie, res.Result().Cookies()[0].Name)
+		assert.Equal(t, at, res.Result().Cookies()[0].Value)
+		assert.Equal(t, constants.RefreshTokenCookie, res.Result().Cookies()[1].Name)
+		assert.Equal(t, rt, res.Result().Cookies()[1].Value)
+		mockAuthService.AssertExpectations(t)
+		mockUserService.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to login when username is not provided", func(t *testing.T) {
+		invalidLoginReq := &requests.LoginRequest{
+			Password: userMock.Password,
+		}
+		mockUserService := new(mocks.UserService)
+		mockAuthService := new(mocks.AuthService)
+
+		ah := NewAuthHandler(mockUserService, mockAuthService)
+		router := gin.Default()
+		router.POST(constants.LoginUserEndpoint, ah.LoginHandler)
+
+		res := httptest.NewRecorder()
+		body, _ := json.Marshal(invalidLoginReq)
+		req, _ := http.NewRequest("POST", constants.LoginUserEndpoint, bytes.NewBuffer(body))
+		router.ServeHTTP(res, req)
+
+		var resBody responses.SuccessResponse
+		_ = json.Unmarshal(res.Body.Bytes(), &resBody)
+
+		assert.Equal(t, constants.Error, resBody.Status)
+		assert.Equal(t, http.StatusText(http.StatusBadRequest), resBody.Code)
+		assert.Equal(t, nil, resBody.Data)
+		mockAuthService.AssertExpectations(t)
+		mockUserService.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to login when there is error from user service", func(t *testing.T) {
+		mockUserService := new(mocks.UserService)
+		mockAuthService := new(mocks.AuthService)
+		mockUserService.On("Login", loginRequest).Return(nil, userServiceError)
+
+		ah := NewAuthHandler(mockUserService, mockAuthService)
+		router := gin.Default()
+		router.POST(constants.LoginUserEndpoint, ah.LoginHandler)
+
+		res := httptest.NewRecorder()
+		body, _ := json.Marshal(loginRequest)
+		req, _ := http.NewRequest("POST", constants.LoginUserEndpoint, bytes.NewBuffer(body))
+		router.ServeHTTP(res, req)
+
+		var resBody responses.SuccessResponse
+		_ = json.Unmarshal(res.Body.Bytes(), &resBody)
+
+		assert.Equal(t, constants.Error, resBody.Status)
+		assert.Equal(t, http.StatusText(http.StatusInternalServerError), resBody.Code)
+		assert.Equal(t, userServiceError.Error(), resBody.Message)
+		assert.Equal(t, nil, resBody.Data)
+		mockAuthService.AssertExpectations(t)
+		mockUserService.AssertExpectations(t)
+	})
+
+	t.Run("should not be able to login when there is error from auth service", func(t *testing.T) {
+		mockUserService := new(mocks.UserService)
+		mockAuthService := new(mocks.AuthService)
+		mockUserService.On("Login", loginRequest).Return(userMock, nil)
+		mockAuthService.On("SaveTokensByUsername", userMock.Username, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(authServiceError)
+
+		ah := NewAuthHandler(mockUserService, mockAuthService)
+		router := gin.Default()
+		router.POST(constants.LoginUserEndpoint, ah.LoginHandler)
+
+		res := httptest.NewRecorder()
+		body, _ := json.Marshal(loginRequest)
+		req, _ := http.NewRequest("POST", constants.LoginUserEndpoint, bytes.NewBuffer(body))
+		router.ServeHTTP(res, req)
+
+		var resBody responses.SuccessResponse
+		_ = json.Unmarshal(res.Body.Bytes(), &resBody)
+
+		assert.Equal(t, constants.Error, resBody.Status)
+		assert.Equal(t, http.StatusText(http.StatusInternalServerError), resBody.Code)
+		assert.Equal(t, authServiceError.Error(), resBody.Message)
+		assert.Equal(t, nil, resBody.Data)
+		mockAuthService.AssertExpectations(t)
+		mockUserService.AssertExpectations(t)
+	})
+}
